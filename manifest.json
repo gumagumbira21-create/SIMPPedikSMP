@@ -1,7 +1,7 @@
 {
   "name": "SIMPPedik",
   "short_name": "SIMPPedik",
-  "start_url": "/SIMPPedikSMP/",
+  "start_url": "https://gumagumbira21-create.github.io/SIMPPedikSMP/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#667eea",
