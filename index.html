@@ -244,6 +244,10 @@
             .login-left h1 { display: none; }
             .school-logo { width: 80px; }
             .login-right { padding: 2rem; }
+            .brand-logo {
+                width: 120px !important;
+                height: 120px !important;
+            }
         }
 
         /* --- Modal Styles (Registration) --- */
@@ -318,7 +322,7 @@
 
     <!-- Logo dan Judul di Luar Container Login -->
     <div style="text-align: center; margin-bottom: 30px; color: white; padding: 0 20px;">
-        <img src="logosimpedik.png" alt="Logo SIMPEDIK" style="width: 200px; height: 200px; margin-bottom: 15px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">
+        <img src="logosimpedik.png" alt="Logo SIMPEDIK" class="brand-logo" style="width: 200px; height: 200px; margin-bottom: 15px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">
         <h2 style="font-size: 1.25rem; font-weight: 600; line-height: 1.4; max-width: 600px; margin: 0 auto; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
             Sistem Informasi Manajemen Perkembangan Pembelajaran Peserta Didik
         </h2>
@@ -944,6 +948,25 @@
         });
     }
     </script>
+<script>
+setInterval(() => {
+    const devtoolsOpen =
+        window.outerWidth - window.innerWidth > 100 ||
+        window.outerHeight - window.innerHeight > 100;
 
+    if (devtoolsOpen) {
+        document.body.innerHTML = "";
+        window.location.href = "about:blank";
+    }
+}, 500);
+
+// Disable klik kanan & shortcut
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.onkeydown = function(e) {
+    if (e.key === "F12") return false;
+    if (e.ctrlKey && e.shiftKey && e.key === "I") return false;
+    if (e.ctrlKey && e.key === "U") return false;
+};
+</script>
 </body>
 </html>
