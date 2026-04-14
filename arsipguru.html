@@ -535,9 +535,9 @@
                         <td>${item.nama_arsip}</td>
                         <td>${item.tanggal_upload}</td>
                         <td>
-                            <a href="${item.file}" target="_blank" class="btn-download">
+                            <button onclick="downloadFile('${item.file}')" class="btn-download" style="border:none; cursor:pointer;">
                                 <i class="fas fa-file-download"></i> Download
-                            </a>
+                            </button>
                         </td>
                         <td>
                             <button class="btn-danger" onclick="deleteArsip('${item.kode_arsip}', '${item.file}')" style="padding: 5px 10px; font-size: 0.8rem;">
@@ -550,6 +550,23 @@
             } catch (error) {
                 console.error('Error loading data:', error);
                 tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">Gagal memuat data: ${error.message}</td></tr>`;
+            }
+        }
+
+        async function downloadFile(url) {
+            try {
+                const fileName = url.split('/').pop();
+                const { data, error } = await supabaseClient.storage.from('aset').download(fileName);
+                if (error) throw error;
+
+                const blob = data;
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                link.click();
+                URL.revokeObjectURL(link.href);
+            } catch (err) {
+                alert("Gagal mendownload: " + err.message);
             }
         }
 
