@@ -554,12 +554,13 @@
                 if (teacherNames.length > 0) {
                     const { data: guruData } = await supabaseClient
                         .from('dataguru')
-                        .select('nama_guru, photo')
+                        .select('nama_guru, photo, nip')
                         .in('nama_guru', teacherNames);
                     
                     if (guruData) {
                         guruData.forEach(g => {
                             if (g.photo) photoMap[g.nama_guru] = g.photo;
+                            nipLookupMap[g.nama_guru] = g.nip || '..........................';
                         });
                     }
                 }
@@ -615,6 +616,7 @@
         // --- Cek Status Piket ---
         let isPiketToday = false;
         let currentPiketTeachersList = [];
+        let nipLookupMap = {};
 
         async function checkPiketStatus() {
             const session = JSON.parse(sessionStorage.getItem('guru_session'));
@@ -780,7 +782,7 @@
                 const attendanceMap = {};
                 if (attendance) {
                     attendance.forEach(rec => {
-                        attendanceMap[rec.kode_maping] = rec;
+                        attendanceMap[rec.kode_mapping] = rec;
                     });
                 }
 
@@ -927,7 +929,7 @@
 
                 absensiData.push({
                     kode_absen: kodeAbsen,
-                    kode_maping: kodeMapping,
+                    kode_mapping: kodeMapping,
                     hari: hari,
                     tanggal: tanggalDB,
                     kelas: kelas,
@@ -994,7 +996,7 @@
             try {
                 const { error } = await mappingClient
                     .from('absensiswa')
-                    .upsert({ kode_absen: kodeAbsen, kode_maping: kodeMapping, hari: hari, tanggal: tanggalDB, kelas: kelas, nisn: nisn, nama_siswa: namaSiswa, status_kehadiran: status });
+                    .upsert({ kode_absen: kodeAbsen, kode_mapping: kodeMapping, hari: hari, tanggal: tanggalDB, kelas: kelas, nisn: nisn, nama_siswa: namaSiswa, status_kehadiran: status });
 
                 if (error) throw error;
                 alert('Data berhasil diperbarui.');
@@ -1295,7 +1297,7 @@
             // 4. Tanda Tangan
             let sigY = doc.lastAutoTable.finalY + 20;
             
-            if (sigY + 40 > doc.internal.pageSize.height) {
+            if (sigY + 50 > doc.internal.pageSize.height) {
                 doc.addPage();
                 sigY = 20;
             }
@@ -1309,18 +1311,21 @@
             signers = [...new Set(signers)];
             
             const count = signers.length;
-            const colWidth = (pageWidth - (2 * margin)) / count;
+            const startX = pageWidth / 2;
+            const availableWidth = pageWidth / 2 - margin;
+            const colWidth = availableWidth / count;
 
             doc.setFontSize(10);
             
             // Tgl Tanda Tangan
-            const lastSignerX = margin + (colWidth * (count - 1)) + (colWidth / 2);
-            doc.text(`Simpang Teritip, ${dateStr}`, lastSignerX, sigY, { align: 'center' });
+            doc.text(`Simpang Teritip, ${dateStr}`, startX + (availableWidth / 2), sigY, { align: 'center' });
 
             signers.forEach((name, index) => {
-                const x = margin + (colWidth * index) + (colWidth / 2);
+                const x = startX + (colWidth * index) + (colWidth / 2);
                 doc.text("Guru Piket", x, sigY + 5, { align: 'center' });
                 doc.text(`( ${name} )`, x, sigY + 30, { align: 'center' });
+                const nip = nipLookupMap[name] || (session && name === session.nama ? session.nip : "..........................");
+                doc.text(`NIP. ${nip}`, x, sigY + 35, { align: 'center' });
             });
 
             doc.save('Laporan_Absensi_Siswa.pdf');
