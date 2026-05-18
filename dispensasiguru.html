@@ -900,8 +900,24 @@
             doc.setFont(undefined, 'normal');
             doc.text(`NIP. ${data.nip_gurupiket || ".........................."}`, xRight, yPos + 30, { align: 'center' });
 
-            // Buka file PDF di tab baru
-            window.open(doc.output('bloburl'), '_blank');
+            // Generate nama file berdasarkan nama siswa
+            const namaSiswaSanitized = data.nama_siswa.replace(/[^a-zA-Z0-9]/g, '_');
+            const fileName = `Surat_Dispensasi_${namaSiswaSanitized}.pdf`;
+
+            // Buka file PDF di tab baru dengan nama file
+            const pdfBlob = doc.output('blob');
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+            const newWindow = window.open(pdfUrl, '_blank');
+            
+            // Set nama file untuk download
+            if (newWindow) {
+                newWindow.document.title = fileName;
+                // Simpan juga dengan nama file yang benar
+                doc.save(fileName);
+            } else {
+                // Fallback jika popup diblokir
+                doc.save(fileName);
+            }
         }
 
         // --- Hapus Dispensasi ---
