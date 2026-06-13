@@ -184,6 +184,18 @@
         }
         .btn-danger:hover { background-color: #dc2626; transform: translateY(-1px); }
 
+        .btn-secondary {
+            background: #166534;
+            color: #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            text-decoration: none;
+        }
+        .btn-secondary:hover {
+            background: #facc15;
+            color: #000;
+            transform: translateY(-1px);
+        }
+
         .table-container {
             background-color: var(--card-bg);
             border-radius: 10px;
@@ -382,100 +394,11 @@
 <body>
 
     <nav class="navbar">
-        <button class="menu-toggle" id="menuToggle">
-            <i class="fas fa-bars"></i>
-        </button>
         <a href="dasboradmin.html" class="navbar-brand">
             <img src="" alt="Logo Sekolah" style="display: none;">
             <span></span>
         </a>
     </nav>
-
-    <aside class="sidebar" id="sidebar">
-        <ul class="sidebar-menu">
-            <li class="menu-item">
-                <a href="dasboradmin.html" class="menu-link">
-                    <div class="menu-content">
-                        <i class="fas fa-home menu-icon"></i>
-                        <span>Dashboard</span>
-                    </div>
-                </a>
-            </li>
-
-            <li class="menu-item">
-                <a href="#" class="menu-link dropdown-toggle active">
-                    <div class="menu-content">
-                        <i class="fas fa-cogs menu-icon"></i>
-                        <span>Pengaturan</span>
-                    </div>
-                    <i class="fas fa-chevron-right dropdown-icon" style="transform: rotate(90deg);"></i>
-                </a>
-                <ul class="submenu open">
-                    <li><a href="identitassekolah.html" class="submenu-link">Identitas Sekolah</a></li>
-                    <li><a href="rombel.html" class="submenu-link">Rombongan Belajar</a></li>
-                    <li><a href="dataguru.html" class="submenu-link">Data Guru</a></li>
-                    <li><a href="datasiswa.html" class="submenu-link active">Data Siswa</a></li>
-                    <li><a href="walikelas.html" class="submenu-link active">Walikelas</a></li>
-                    <li><a href="guruwali.html" class="submenu-link">Guru Wali</a></li>
-                    <li><a href="gurupiket.html" class="submenu-link">Guru Piket</a></li>
-                    <li><a href="mappingsiswa.html" class="submenu-link">Mapping Kelas Siswa</a></li>
-                    <li><a href="datamapel.html" class="submenu-link">Mata Pelajaran</a></li>
-                    <li><a href="areapiket.html" class="submenu-link">Area Piket</a></li>
-
-                </ul>
-            </li>
-
-            <li class="menu-item">
-                <a href="#" class="menu-link dropdown-toggle">
-                    <div class="menu-content">
-                        <i class="fas fa-file-alt menu-icon"></i>
-                        <span>Laporan</span>
-                    </div>
-                    <i class="fas fa-chevron-right dropdown-icon"></i>
-                </a>
-                <ul class="submenu">
-                    <li><a href="piketharianadmin.html" class="submenu-link">Piket Harian</a></li>
-                    <li><a href="absensiadmin.html" class="submenu-link">Kehadiran Siswa</a></li>
-                    <li><a href="pembinaanwaliadmin.html" class="submenu-link">Pembinaan Guru Wali</a></li>
-                    <li><a href="nilaiakademisadmin.html" class="submenu-link">Nilai Akademis</a></li>
-                    <li><a href="kasusadmin.html" class="submenu-link">Kasus</a></li>
-                    <li><a href="daftarmbg.html" class="submenu-link">Cetak Quota MBG</a></li>
-
-                </ul>
-            </li>
-            <li class="menu-item">
-                <a href="Arsipadmin.html" class="menu-link">
-                    <div class="menu-content">
-                        <i class="fas fa-archive menu-icon"></i>
-                        <span>Arsip</span>
-                    </div>
-                </a>
-            </li>
-
-
-            <li class="menu-item">
-                <a href="backup.html" class="menu-link">
-                    <div class="menu-content">
-                        <i class="fas fa-history menu-icon"></i>
-                        <span>Backup dan Reset</span>
-                    </div>
-                </a>
-            </li>
-        </ul>
-
-        <div class="sidebar-footer">
-            <div class="admin-avatar">A</div> 
-            <div class="admin-info">
-                <div class="admin-name">Administrator</div>
-                <div style="font-size: 0.75rem; color: #bdc3c7;">Online</div>
-            </div>
-            <button class="btn-logout" title="Logout">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
-        </div>
-    </aside>
-
-    <div class="overlay" id="overlay"></div>
 
     <main class="main-content">
         <div class="page-header">
@@ -486,6 +409,7 @@
             <div class="action-buttons">
                 <button class="btn btn-primary" id="addRombelBtn"><i class="fas fa-plus"></i> Tambah Rombel</button>
                 <button class="btn btn-danger" id="exportPdfBtn"><i class="fas fa-file-pdf"></i> Export Pdf</button>
+                <a href="dasboradmin.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Dashboard</a>
             </div>
         </div>
 
@@ -554,35 +478,6 @@
     </div>
 
     <script>
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-
-        function toggleSidebar() {
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-        }
-
-        menuToggle.addEventListener('click', toggleSidebar);
-        overlay.addEventListener('click', toggleSidebar);
-
-        const dropdowns = document.querySelectorAll('.dropdown-toggle');
-
-        dropdowns.forEach(dropdown => {
-            dropdown.addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                const submenu = dropdown.nextElementSibling;
-                submenu.classList.toggle('open');
-
-                const icon = dropdown.querySelector('.dropdown-icon');
-                if (submenu.classList.contains('open')) {
-                    icon.style.transform = 'rotate(90deg)';
-                } else {
-                    icon.style.transform = 'rotate(0deg)';
-                }
-            });
-        });
 
         const supabaseUrl = 'https://uxgjxtboteoxwwwbutpb.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4Z2p4dGJvdGVveHd3d2J1dHBiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE4MDIsImV4cCI6MjA5MTU5NzgwMn0.jO_GLS0DKFE4wwPejh4YVC9ZOO4BENdESH1zoQe1rsc';
