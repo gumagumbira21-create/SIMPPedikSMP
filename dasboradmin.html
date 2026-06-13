@@ -260,6 +260,15 @@
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .accordion {
+            width: 100%;
+        }
+
+        .accordion-item {
+            width: 100%;
         }
 
         /* --- Widget Dashboard --- */
@@ -336,6 +345,140 @@
             font-size: 0.85rem;
             border-top: 1px solid #eee;
             margin-top: 20px;
+        }
+
+        /* --- Accordion Menu --- */
+        .accordion-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            margin-bottom: 14px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .accordion-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #fff;
+            text-align: left;
+            transition: filter 0.2s;
+        }
+
+        .accordion-header:hover, .accordion-header.active {
+            filter: brightness(1.1);
+        }
+
+        .accordion-header .dropdown-icon {
+            color: #fff;
+        }
+
+        .accordion-header .menu-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .accordion-body {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 12px;
+            padding: 0 15px;
+            background-color: #f4f6fb;
+        }
+
+        .accordion-body.submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .accordion-body.submenu.open {
+            max-height: 1000px;
+            padding-top: 18px;
+            padding-bottom: 18px;
+        }
+
+        .accordion-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            aspect-ratio: 1 / 1;
+            padding: 10px;
+            background: linear-gradient(145deg, #ffffff, #eef1f8);
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            color: #4a4a4a;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s, color 0.2s;
+        }
+
+        .accordion-btn:hover {
+            background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
+            color: #fff;
+            border-color: transparent;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(102,126,234,0.35);
+        }
+
+        .accordion-btn i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            transition: color 0.2s;
+        }
+
+        .accordion-btn:hover i {
+            color: #fff;
+        }
+
+        /* Variasi warna icon biar lebih hidup */
+        .accordion-btn:nth-child(6n+1) i { color: #667eea; }
+        .accordion-btn:nth-child(6n+2) i { color: #f59e0b; }
+        .accordion-btn:nth-child(6n+3) i { color: #10b981; }
+        .accordion-btn:nth-child(6n+4) i { color: #ef4444; }
+        .accordion-btn:nth-child(6n+5) i { color: #3b82f6; }
+        .accordion-btn:nth-child(6n+6) i { color: #8b5cf6; }
+
+        .accordion-btn:hover i {
+            color: #fff !important;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 14px;
+            padding: 14px;
+            background: linear-gradient(135deg, #ef4444, #c0392b);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: filter 0.2s, transform 0.2s;
+        }
+
+        .logout-btn:hover {
+            filter: brightness(1.08);
+            transform: translateY(-2px);
         }
 
         /* --- Tampilan HP --- */
@@ -427,9 +570,6 @@
 
     <!-- Navigasi Atas -->
     <nav class="navbar">
-        <button class="menu-toggle" id="menuToggle" title="Toggle Sidebar Menu">
-            <i class="fas fa-bars"></i>
-        </button>
         <a href="#" class="navbar-brand">
             <img src="" alt="Logo Sekolah" style="display: none;">
             <span></span>
@@ -439,98 +579,6 @@
             <span id="navbarDate"></span>
         </div>
     </nav>
-
-    <!-- Menu Samping -->
-    <aside class="sidebar" id="sidebar">
-        <ul class="sidebar-menu">
-            <li class="menu-item">
-                <a href="#" class="menu-link active">
-                    <div class="menu-content">
-                        <i class="fas fa-home menu-icon"></i>
-                        <span>Dashboard</span>
-                    </div>
-                </a>
-            </li>
-
-            <!-- Menu Pengaturan -->
-            <li class="menu-item">
-                <a href="#" class="menu-link dropdown-toggle">
-                    <div class="menu-content">
-                        <i class="fas fa-cogs menu-icon"></i>
-                        <span>Pengaturan</span>
-                    </div>
-                    <i class="fas fa-chevron-right dropdown-icon"></i>
-                </a>
-                <ul class="submenu open">
-                    <li><a href="identitassekolah.html" class="submenu-link">Identitas Sekolah</a></li>
-                    <li><a href="rombel.html" class="submenu-link">Rombongan Belajar</a></li>
-                    <li><a href="dataguru.html" class="submenu-link">Data Guru</a></li>
-                    <li><a href="datasiswa.html" class="submenu-link active">Data Siswa</a></li>
-                    <li><a href="walikelas.html" class="submenu-link active">Walikelas</a></li>
-                    <li><a href="guruwali.html" class="submenu-link">Guru Wali</a></li>
-                    <li><a href="gurupiket.html" class="submenu-link">Guru Piket</a></li>
-                    <li><a href="mappingsiswa.html" class="submenu-link">Mapping Kelas Siswa</a></li>
-                    <li><a href="datamapel.html" class="submenu-link">Mata Pelajaran</a></li>
-                    <li><a href="areapiket.html" class="submenu-link">Area Piket</a></li>
-
-                </ul>
-            </li>
-
-            <!-- Menu Laporan -->
-            <li class="menu-item">
-                <a href="#" class="menu-link dropdown-toggle">
-                    <div class="menu-content">
-                        <i class="fas fa-file-alt menu-icon"></i>
-                        <span>Laporan</span>
-                    </div>
-                    <i class="fas fa-chevron-right dropdown-icon"></i>
-                </a>
-                <ul class="submenu">
-                    <li><a href="piketharianadmin.html" class="submenu-link">Piket Harian</a></li>
-                    <li><a href="absensiadmin.html" class="submenu-link">Kehadiran Siswa</a></li>
-                    <li><a href="pembinaanwaliadmin.html" class="submenu-link">Pembinaan Guru Wali</a></li>
-                    <li><a href="nilaiakademisadmin.html" class="submenu-link">Nilai Akademis</a></li>
-                    <li><a href="kasusadmin.html" class="submenu-link">Kasus</a></li>
-                    <li><a href="daftarmbg.html" class="submenu-link">Cetak Quota MBG</a></li>
-
-                </ul>
-            </li>
-            <li class="menu-item">
-                <a href="Arsipadmin.html" class="menu-link">
-                    <div class="menu-content">
-                        <i class="fas fa-archive menu-icon"></i>
-                        <span>Arsip</span>
-                    </div>
-                </a>
-            </li>
-
-
-            <li class="menu-item">
-                <a href="backup.html" class="menu-link">
-                    <div class="menu-content">
-                        <i class="fas fa-history menu-icon"></i>
-                        <span>Backup dan Reset</span>
-                    </div>
-                </a>
-            </li>
-        </ul>
-
-        <!-- Profil Bawah -->
-        <div class="sidebar-footer">
-            <!-- Pake Inisial Kalo Gak Ada Foto -->
-            <div class="admin-avatar">A</div> 
-            <div class="admin-info">
-                <div class="admin-name">Administrator</div>
-                <div style="font-size: 0.75rem; color: #bdc3c7;">Online</div>
-            </div>
-            <button class="btn-logout" title="Logout" onclick="if(confirm('Apakah Anda yakin ingin keluar?')) window.location.href = 'index.html'">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
-        </div>
-    </aside>
-
-    <!-- Layar Gelap HP -->
-    <div class="overlay" id="overlay"></div>
 
     <!-- Area Konten -->
     <main class="main-content">
@@ -547,6 +595,60 @@
                 </div>
                 <i class="fas fa-user-graduate stat-icon" style="color: var(--primary-color);"></i>
             </div>
+        </div>
+
+        <!-- Container Accordion Menu -->
+        <div class="dashboard-card">
+            <div class="accordion" id="mainAccordion">
+                <!-- Accordion Item: Menu Pengaturan -->
+                <div class="accordion-item">
+                    <button class="accordion-header dropdown-toggle" type="button">
+                        <div class="menu-content">
+                            <i class="fas fa-cogs menu-icon"></i>
+                            <span>Menu Pengaturan</span>
+                        </div>
+                        <i class="fas fa-chevron-right dropdown-icon"></i>
+                    </button>
+                    <div class="accordion-body submenu">
+                        <a href="identitassekolah.html" class="accordion-btn"><i class="fas fa-school"></i> Identitas Sekolah</a>
+                        <a href="rombel.html" class="accordion-btn"><i class="fas fa-layer-group"></i> Rombongan Belajar</a>
+                        <a href="dataguru.html" class="accordion-btn"><i class="fas fa-chalkboard-teacher"></i> Data Guru</a>
+                        <a href="datasiswa.html" class="accordion-btn"><i class="fas fa-user-graduate"></i> Data Siswa</a>
+                        <a href="walikelas.html" class="accordion-btn"><i class="fas fa-user-tie"></i> Walikelas</a>
+                        <a href="guruwali.html" class="accordion-btn"><i class="fas fa-chalkboard-teacher"></i> Guru Wali</a>
+                        <a href="gurupiket.html" class="accordion-btn"><i class="fas fa-user-shield"></i> Guru Piket</a>
+                        <a href="mappingsiswa.html" class="accordion-btn"><i class="fas fa-th-large"></i> Mapping Kelas Siswa</a>
+                        <a href="datamapel.html" class="accordion-btn"><i class="fas fa-book"></i> Mata Pelajaran</a>
+                        <a href="areapiket.html" class="accordion-btn"><i class="fas fa-map-marker-alt"></i> Area Piket</a>
+                        <a href="Arsipadmin.html" class="accordion-btn"><i class="fas fa-archive"></i> Arsip</a>
+                        <a href="backup.html" class="accordion-btn"><i class="fas fa-history"></i> Backup dan Reset</a>
+                    </div>
+                </div>
+
+                <!-- Accordion Item: Laporan -->
+                <div class="accordion-item">
+                    <button class="accordion-header dropdown-toggle" type="button">
+                        <div class="menu-content">
+                            <i class="fas fa-file-alt menu-icon"></i>
+                            <span>Laporan</span>
+                        </div>
+                        <i class="fas fa-chevron-right dropdown-icon"></i>
+                    </button>
+                    <div class="accordion-body submenu">
+                        <a href="piketharianadmin.html" class="accordion-btn"><i class="fas fa-calendar-check"></i> Piket Harian</a>
+                        <a href="absensiadmin.html" class="accordion-btn"><i class="fas fa-user-check"></i> Kehadiran Siswa</a>
+                        <a href="pembinaanwaliadmin.html" class="accordion-btn"><i class="fas fa-user-friends"></i> Pembinaan Guru Wali</a>
+                        <a href="nilaiakademisadmin.html" class="accordion-btn"><i class="fas fa-sort-numeric-down"></i> Nilai Akademis</a>
+                        <a href="kasusadmin.html" class="accordion-btn"><i class="fas fa-user-injured"></i> Kasus</a>
+                        <a href="daftarmbg.html" class="accordion-btn"><i class="fas fa-receipt"></i> Cetak Quota MBG</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tombol Logout -->
+            <button class="logout-btn" onclick="if(confirm('Apakah Anda yakin ingin keluar?')) window.location.href = 'index.html'">
+                <i class="fas fa-sign-out-alt"></i> Log Out
+            </button>
         </div>
 
         <!-- Container Data Guru -->
@@ -1078,19 +1180,6 @@
         }
         document.addEventListener('DOMContentLoaded', updateNavbarDate);
 
-        // Toggle Sidebar HP
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-
-        function toggleSidebar() {
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-        }
-
-        menuToggle.addEventListener('click', toggleSidebar);
-        overlay.addEventListener('click', toggleSidebar);
-
         // Logika Dropdown
         const dropdowns = document.querySelectorAll('.dropdown-toggle');
 
@@ -1098,17 +1187,25 @@
             dropdown.addEventListener('click', (e) => {
                 e.preventDefault();
                 
-                // Toggle submenu
                 const submenu = dropdown.nextElementSibling;
-                submenu.classList.toggle('open');
+                const isOpen = submenu.classList.contains('open');
+
+                // Tutup semua accordion lain
+                dropdowns.forEach(other => {
+                    const otherSubmenu = other.nextElementSibling;
+                    if (otherSubmenu !== submenu) {
+                        otherSubmenu.classList.remove('open');
+                        const otherIcon = other.querySelector('.dropdown-icon');
+                        if (otherIcon) otherIcon.style.transform = 'rotate(0deg)';
+                    }
+                });
+
+                // Toggle submenu yang diklik
+                submenu.classList.toggle('open', !isOpen);
 
                 // Rotate icon
                 const icon = dropdown.querySelector('.dropdown-icon');
-                if (submenu.classList.contains('open')) {
-                    icon.style.transform = 'rotate(90deg)';
-                } else {
-                    icon.style.transform = 'rotate(0deg)';
-                }
+                icon.style.transform = !isOpen ? 'rotate(90deg)' : 'rotate(0deg)';
             });
         });
 
