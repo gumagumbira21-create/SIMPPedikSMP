@@ -527,26 +527,44 @@
         }
         
         @media (max-width: 768px) {
+            .navbar-brand span { font-size: 1rem; }
+
+            .main-content {
+                padding: calc(var(--header-height) + 10px) 5px 5px 5px;
+                margin-top: 0;
+            }
+
+            .container {
+                border-radius: 8px;
+                margin: 0;
+            }
+
+            .content {
+                padding: 12px 5px;
+            }
+
+            .form-section {
+                padding: 12px 8px;
+                margin-bottom: 15px;
+            }
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .button-group {
                 grid-template-columns: 1fr;
+                gap: 10px;
+                padding: 12px 0 0;
             }
-            
+
             .content button {
                 width: 100%;
             }
-            
-            .navbar-brand span {
-                font-size: 1rem;
-            }
-        }
 
-        @media (min-width: 769px) {
-            .sidebar.active ~ .main-content {
-                margin-left: 0;
+            footer {
+                padding: 15px 5px;
+                font-size: 0.75rem;
             }
         }
     </style>
