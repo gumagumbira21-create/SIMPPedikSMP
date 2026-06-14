@@ -12,11 +12,7 @@
         :root {
             --primary-color: #667eea;
             --secondary-color: #764ba2;
-            --sidebar-bg: #2c3e50;
-            --sidebar-text: #ecf0f1;
-            --sidebar-hover: #34495e;
             --header-height: 60px;
-            --sidebar-width: 260px;
             --bg-light: #f4f6f9;
         }
 
@@ -49,14 +45,6 @@
             right: 0;
         }
 
-        .menu-toggle {
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #333;
-            margin-right: 1rem;
-            background: none;
-            border: none;
-        }
 
         .navbar-brand {
             display: flex;
@@ -77,139 +65,6 @@
             color: var(--secondary-color);
         }
 
-        .sidebar {
-            position: fixed;
-            top: var(--header-height);
-            left: 0;
-            bottom: 0;
-            width: var(--sidebar-width);
-            background-color: var(--sidebar-bg);
-            color: var(--sidebar-text);
-            overflow-y: auto;
-            transition: transform 0.3s ease;
-            z-index: 1001;
-            display: flex;
-            flex-direction: column;
-            transform: translateX(-100%);
-        }
-
-        .sidebar.active {
-            transform: translateX(0);
-        }
-
-        .sidebar-menu {
-            flex: 1;
-            padding-top: 1rem;
-            list-style: none;
-        }
-
-        .menu-item {
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .menu-link {
-            display: flex;
-            align-items: center;
-            padding: 15px 20px;
-            color: var(--sidebar-text);
-            text-decoration: none;
-            transition: background 0.2s;
-            justify-content: space-between;
-        }
-
-        .menu-link:hover, .menu-link.active {
-            background-color: var(--sidebar-hover);
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .menu-content {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .menu-icon {
-            width: 20px;
-            text-align: center;
-        }
-
-        .dropdown-icon {
-            font-size: 0.8rem;
-            transition: transform 0.3s;
-        }
-
-        .submenu {
-            list-style: none;
-            background-color: rgba(0,0,0,0.2);
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-        }
-
-        .submenu.open {
-            max-height: 500px;
-        }
-
-        .submenu-link {
-            display: block;
-            padding: 10px 20px 10px 50px;
-            color: #bdc3c7;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        .submenu-link:hover, .submenu-link.active {
-            color: #fff;
-            background-color: rgba(255,255,255,0.05);
-        }
-
-        .sidebar-footer {
-            padding: 20px;
-            background-color: rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .admin-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .admin-info {
-            flex: 1;
-            overflow: hidden;
-        }
-
-        .admin-name {
-            font-size: 0.9rem;
-            font-weight: 600;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-        }
-
-        .btn-logout {
-            background: none;
-            border: none;
-            color: #e74c3c;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: color 0.2s;
-        }
-
-        .btn-logout:hover {
-            color: #c0392b;
-        }
 
         .main-content {
             margin-top: var(--header-height);
@@ -217,7 +72,6 @@
             padding: 2rem;
             flex: 1;
             overflow-y: auto;
-            transition: margin-left 0.3s ease;
         }
 
         .dashboard-card {
@@ -237,30 +91,17 @@
             margin-top: 20px;
         }
 
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            -webkit-backdrop-filter: blur(4px);
-            backdrop-filter: blur(4px);
-        }
-
-        .overlay.active {
-            display: block;
-        }
 
         @media (max-width: 768px) {
-            .navbar-brand span {
-                font-size: 1rem;
+            .navbar-brand span { font-size: 1rem; }
+            .main-content {
+                padding: calc(var(--header-height) + 10px) 5px 5px 5px;
+                margin-top: 0;
             }
-        }
-
-        @media (min-width: 769px) {
-            .sidebar.active ~ .main-content {
-                margin-left: 0;
-            }
+            .dashboard-card { padding: 12px 5px; }
+            .btn { padding: 8px 10px; font-size: 0.8rem; }
+            .custom-table th, .custom-table td { padding: 8px 6px; font-size: 0.8rem; }
+            .main-footer { padding: 15px 5px; font-size: 0.78rem; }
         }
 
         .btn {
@@ -312,100 +153,11 @@
 <body>
 
     <nav class="navbar">
-        <button class="menu-toggle" id="menuToggle">
-            <i class="fas fa-bars"></i>
-        </button>
         <a href="dasboradmin.html" class="navbar-brand">
             <img src="" alt="Logo Sekolah" style="display: none;">
             <span></span>
         </a>
     </nav>
-
-    <aside class="sidebar" id="sidebar">
-        <ul class="sidebar-menu">
-            <li class="menu-item">
-                <a href="dasboradmin.html" class="menu-link">
-                    <div class="menu-content">
-                        <i class="fas fa-home menu-icon"></i>
-                        <span>Dashboard</span>
-                    </div>
-                </a>
-            </li>
-
-            <li class="menu-item">
-                <a href="#" class="menu-link dropdown-toggle active">
-                    <div class="menu-content">
-                        <i class="fas fa-cogs menu-icon"></i>
-                        <span>Pengaturan</span>
-                    </div>
-                    <i class="fas fa-chevron-right dropdown-icon" style="transform: rotate(90deg);"></i>
-                </a>
-                <ul class="submenu open">
-                    <li><a href="identitassekolah.html" class="submenu-link">Identitas Sekolah</a></li>
-                    <li><a href="rombel.html" class="submenu-link">Rombongan Belajar</a></li>
-                    <li><a href="dataguru.html" class="submenu-link">Data Guru</a></li>
-                    <li><a href="datasiswa.html" class="submenu-link">Data Siswa</a></li>
-                    <li><a href="walikelas.html" class="submenu-link active">Walikelas</a></li>
-                    <li><a href="guruwali.html" class="submenu-link">Guru Wali</a></li>
-                    <li><a href="gurupiket.html" class="submenu-link">Guru Piket</a></li>
-                    <li><a href="mappingsiswa.html" class="submenu-link">Mapping Kelas Siswa</a></li>
-                    <li><a href="datamapel.html" class="submenu-link">Mata Pelajaran</a></li>
-                    <li><a href="areapiket.html" class="submenu-link">Area Piket</a></li>
-
-                </ul>
-            </li>
-
-            <li class="menu-item">
-                <a href="#" class="menu-link dropdown-toggle">
-                    <div class="menu-content">
-                        <i class="fas fa-file-alt menu-icon"></i>
-                        <span>Laporan</span>
-                    </div>
-                    <i class="fas fa-chevron-right dropdown-icon"></i>
-                </a>
-                <ul class="submenu">
-                    <li><a href="piketharianadmin.html" class="submenu-link">Piket Harian</a></li>
-                    <li><a href="absensiadmin.html" class="submenu-link">Kehadiran Siswa</a></li>
-                    <li><a href="pembinaanwaliadmin.html" class="submenu-link">Pembinaan Guru Wali</a></li>
-                    <li><a href="nilaiakademisadmin.html" class="submenu-link">Nilai Akademis</a></li>
-                    <li><a href="kasusadmin.html" class="submenu-link">Kasus</a></li>
-                    <li><a href="daftarmbg.html" class="submenu-link">Cetak Quota MBG</a></li>
-
-                </ul>
-            </li>
-            <li class="menu-item">
-                <a href="Arsipadmin.html" class="menu-link">
-                    <div class="menu-content">
-                        <i class="fas fa-archive menu-icon"></i>
-                        <span>Arsip</span>
-                    </div>
-                </a>
-            </li>
-
-
-            <li class="menu-item">
-                <a href="backup.html" class="menu-link">
-                    <div class="menu-content">
-                        <i class="fas fa-history menu-icon"></i>
-                        <span>Backup dan Reset</span>
-                    </div>
-                </a>
-            </li>
-        </ul>
-
-        <div class="sidebar-footer">
-            <div class="admin-avatar">A</div> 
-            <div class="admin-info">
-                <div class="admin-name">Administrator</div>
-                <div style="font-size: 0.75rem; color: #bdc3c7;">Online</div>
-            </div>
-            <button class="btn-logout" title="Logout" aria-label="Logout">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
-        </div>
-    </aside>
-
-    <div class="overlay" id="overlay"></div>
 
     <main class="main-content">
         <div class="dashboard-card">
@@ -417,6 +169,7 @@
             <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                 <button class="btn btn-primary" id="addWalikelasBtn"><i class="fas fa-plus"></i> Tambah Walikelas</button>
                 <button class="btn btn-danger" id="exportPdfBtn"><i class="fas fa-file-pdf"></i> Export Pdf</button>
+                <a href="dasboradmin.html" class="btn" style="background: linear-gradient(to right, #10b981, #059669);"><i class="fas fa-home"></i> Dashboard</a>
             </div>
 
             <div class="table-responsive">
@@ -479,36 +232,6 @@
     </div>
 
     <script>
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-
-        function toggleSidebar() {
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-        }
-
-        menuToggle.addEventListener('click', toggleSidebar);
-        overlay.addEventListener('click', toggleSidebar);
-
-        const dropdowns = document.querySelectorAll('.dropdown-toggle');
-
-        dropdowns.forEach(dropdown => {
-            dropdown.addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                const submenu = dropdown.nextElementSibling;
-                submenu.classList.toggle('open');
-
-                const icon = dropdown.querySelector('.dropdown-icon');
-                if (submenu.classList.contains('open')) {
-                    icon.style.transform = 'rotate(90deg)';
-                } else {
-                    icon.style.transform = 'rotate(0deg)';
-                }
-            });
-        });
-
         const supabaseUrl = 'https://uxgjxtboteoxwwwbutpb.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4Z2p4dGJvdGVveHd3d2J1dHBiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE4MDIsImV4cCI6MjA5MTU5NzgwMn0.jO_GLS0DKFE4wwPejh4YVC9ZOO4BENdESH1zoQe1rsc';
         
