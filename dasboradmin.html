@@ -554,6 +554,49 @@
             .navbar-date {
                 display: none !important;
             }
+
+            /* Padding kiri kanan 5px di mobile */
+            .main-content {
+                padding: var(--header-height) 5px 5px 5px;
+                margin-top: 0;
+            }
+
+            .dashboard-card {
+                padding: 12px 5px;
+            }
+
+            /* Ukuran tombol accordion disesuaikan seperti dashboardadmin.html mobile */
+            .accordion-body {
+                padding: 0 5px;
+                gap: 8px;
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .accordion-body.submenu.open {
+                padding-top: 10px;
+                padding-bottom: 12px;
+            }
+
+            .accordion-btn {
+                padding: 12px 4px 10px;
+                font-size: 10px;
+                gap: 5px;
+                border-radius: 10px;
+            }
+
+            .accordion-btn i {
+                font-size: 20px;
+            }
+
+            .accordion-header {
+                padding: 12px 14px;
+                font-size: 0.9rem;
+            }
+
+            .logout-btn {
+                padding: 10px 14px;
+                font-size: 0.9rem;
+            }
         }
 
         @media (min-width: 769px) {
