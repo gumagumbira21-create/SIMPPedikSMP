@@ -30,8 +30,7 @@
             background-color: var(--bg-light);
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
         }
 
         /* --- Navbar --- */
@@ -40,7 +39,7 @@
             background-color: #fff;
             display: flex;
             align-items: center;
-            padding: 0 1rem;
+            padding: 0 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             z-index: 1002;
             position: fixed;
@@ -73,15 +72,13 @@
         /* --- Main Content --- */
         .main-content {
             margin-top: var(--header-height);
-            margin-left: 0;
-            padding: 2rem;
+            padding: 1rem 5px;
             flex: 1;
-            overflow-y: auto;
         }
 
         .dashboard-card {
             background: white;
-            padding: 20px;
+            padding: 20px 5px;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             margin-bottom: 20px;
@@ -90,24 +87,29 @@
         /* Kaki Halaman */
         .main-footer {
             text-align: center;
-            padding: 20px;
+            padding: 20px 5px;
             color: #888;
             font-size: 0.85rem;
             border-top: 1px solid #eee;
             margin-top: 20px;
         }
 
+        /* Tombol aksi atas — wrap otomatis di mobile */
+        .action-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
 
         @media (max-width: 768px) {
-            .navbar-brand span { font-size: 1rem; }
-            .main-content {
-                padding: calc(var(--header-height) + 10px) 5px 5px 5px;
-                margin-top: 0;
-            }
+            .navbar-brand span { font-size: 0.95rem; }
             .dashboard-card { padding: 12px 5px; }
-            .btn { padding: 8px 10px; font-size: 0.8rem; }
-            .custom-table th, .custom-table td { padding: 8px 6px; font-size: 0.8rem; }
-            .main-footer { padding: 15px 5px; font-size: 0.78rem; }
+            .btn { padding: 8px 12px; font-size: 0.8rem; }
+            .action-bar { gap: 6px; }
+            .action-bar .btn { flex: 1 1 auto; justify-content: center; min-width: 120px; }
+            .custom-table th, .custom-table td { padding: 8px 5px; font-size: 0.78rem; white-space: nowrap; }
+            .main-footer { padding: 12px 5px; font-size: 0.75rem; }
         }
 
         /* --- Styles Tambahan untuk Tabel dan Tombol --- */
@@ -131,7 +133,7 @@
 
         .table-responsive { overflow-x: auto; }
         .custom-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .custom-table th, .custom-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+        .custom-table th, .custom-table td { padding: 12px 5px; text-align: left; border-bottom: 1px solid #eee; }
         .custom-table th { background-color: #f8f9fa; color: #555; font-weight: 600; }
         .custom-table tr:hover { background-color: #f9f9f9; }
 
@@ -176,7 +178,7 @@
         
         <!-- Container Tabel Data Guru Wali -->
         <div class="dashboard-card">
-            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <div class="action-bar">
                 <button class="btn btn-primary" id="addGuruWaliBtn"><i class="fas fa-plus"></i> Tambah Guru Wali</button>
                 <button class="btn btn-danger" id="exportPdfBtn"><i class="fas fa-file-pdf"></i> Export Pdf</button>
                 <a href="dasboradmin.html" class="btn" style="background: linear-gradient(to right, #10b981, #059669);"><i class="fas fa-home"></i> Dashboard</a>
