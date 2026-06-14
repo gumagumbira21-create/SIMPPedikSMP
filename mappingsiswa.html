@@ -32,8 +32,7 @@
             background-color: var(--bg-light);
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
         }
 
         .navbar {
@@ -80,13 +79,11 @@
             margin-left: 0;
             padding: 1rem 5px;
             flex: 1;
-            overflow-y: auto;
-            transition: margin-left 0.3s ease;
         }
 
         .dashboard-card {
             background: white;
-            padding: 20px;
+            padding: 20px 5px;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             margin-bottom: 20px;
@@ -94,7 +91,7 @@
 
         .main-footer {
             text-align: center;
-            padding: 20px;
+            padding: 20px 5px;
             color: #888;
             font-size: 0.85rem;
             border-top: 1px solid #eee;
@@ -115,9 +112,13 @@
         }
 
         @media (max-width: 768px) {
-            .navbar-brand span {
-                font-size: 1rem;
-            }
+            .navbar-brand span { font-size: 0.95rem; }
+            .dashboard-card { padding: 12px 5px; }
+            .btn { padding: 7px 10px; font-size: 0.8rem; }
+            .tab-btn { padding: 8px 14px; font-size: 0.8rem; }
+            .table-placeholder th, .table-placeholder td { padding: 8px 5px; font-size: 0.78rem; white-space: nowrap; }
+            .main-footer { padding: 12px 5px; font-size: 0.75rem; }
+            .modal-content { padding: 15px; width: 95%; }
         }
 
         .tabs-container {
@@ -214,25 +215,29 @@
 
         .tab-actions {
             display: flex;
-            gap: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
             margin-bottom: 15px;
             padding-bottom: 15px;
             border-bottom: 1px solid #374151;
         }
         
+        .table-wrapper { overflow-x: auto; }
+
         .table-placeholder {
             width: 100%;
             border-collapse: collapse;
             color: #e5e7eb;
         }
         .table-placeholder th, .table-placeholder td {
-            padding: 12px;
+            padding: 12px 5px;
             border-bottom: 1px solid #374151;
             text-align: left;
         }
         .table-placeholder th {
             background-color: #111827;
             color: #9ca3af;
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -421,7 +426,7 @@
 
                     const tableDiv = document.createElement('div');
                     const tbodyId = `tbody-${kelasName.replace(/\s+/g, '-')}`;
-                    tableDiv.style.overflowX = 'auto';
+                    tableDiv.className = 'table-wrapper';
                     tableDiv.innerHTML = `
                         <table class="table-placeholder">
                             <thead>
