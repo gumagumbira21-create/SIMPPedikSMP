@@ -607,6 +607,141 @@
                 margin-left: 0; /* Gak Geser, Cuma Overlay */
             }
         }
+
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            color: #333;
+            width: 90%;
+            max-width: 500px;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        .close-modal {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #9ca3af;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: #ef4444;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #6b7280;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input[readonly] {
+            background-color: #f3f4f6;
+            cursor: not-allowed;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+        }
+
+        .btn-secondary {
+            background-color: #6b7280;
+        }
     </style>
 </head>
 <body>
@@ -685,6 +820,16 @@
                         <a href="kasusadmin.html" class="accordion-btn"><i class="fas fa-user-injured"></i> Kasus</a>
                         <a href="daftarmbg.html" class="accordion-btn"><i class="fas fa-receipt"></i> Cetak Quota MBG</a>
                     </div>
+                </div>
+
+                <!-- Accordion Item: Pengumuman -->
+                <div class="accordion-item">
+                    <button class="accordion-header" type="button" onclick="openPengumumanModal()" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        <div class="menu-content">
+                            <i class="fas fa-bullhorn menu-icon"></i>
+                            <span style="color: #000;">Pengumuman</span>
+                        </div>
+                    </button>
                 </div>
             </div>
 
@@ -827,13 +972,54 @@
         </footer>
     </main>
 
+    <!-- Modal Pengumuman -->
+    <div id="pengumumanModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-bullhorn" style="color: var(--primary-color); margin-right: 10px;"></i> Input Pengumuman</h3>
+                <span class="close-modal" id="closePengumumanModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="pengumumanId">ID</label>
+                    <input type="text" id="pengumumanId" readonly placeholder="ID akan di-generate otomatis">
+                </div>
+                <div class="form-group">
+                    <label for="pengumumanDeskripsi">Deskripsi</label>
+                    <textarea id="pengumumanDeskripsi" placeholder="Masukkan deskripsi pengumuman..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="pengumumanAdminRole">Admin Role</label>
+                    <select id="pengumumanAdminRole">
+                        <option value="">Pilih Admin Role</option>
+                        <option value="Kepala Sekolah">Kepala Sekolah</option>
+                        <option value="Admin Aplikasi">Admin Aplikasi</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="resetPengumumanBtn">
+                    <i class="fas fa-undo"></i> Reset
+                </button>
+                <button class="btn btn-secondary" id="cancelPengumumanBtn">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn btn-primary" id="savePengumumanBtn">
+                    <i class="fas fa-save"></i> Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // --- Koneksi Navbar ---
         const supabaseUrl = 'https://uxgjxtboteoxwwwbutpb.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4Z2p4dGJvdGVveHd3d2J1dHBiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE4MDIsImV4cCI6MjA5MTU5NzgwMn0.jO_GLS0DKFE4wwPejh4YVC9ZOO4BENdESH1zoQe1rsc';
         
+        let supabaseClient = null;
+        
         if (typeof supabase !== 'undefined') {
-            const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+            supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
             const absensiClient = supabaseClient;
 
             async function loadSchoolIdentity() {
@@ -1208,6 +1394,169 @@
             document.addEventListener('DOMContentLoaded', loadLowestGrades);
             document.addEventListener('DOMContentLoaded', loadRecentCases);
         }
+
+        // --- Modal Pengumuman ---
+        let existingPengumumanData = null;
+
+        async function openPengumumanModal() {
+            if (!supabaseClient) {
+                alert('Supabase client tidak tersedia. Silakan refresh halaman.');
+                return;
+            }
+
+            const modal = document.getElementById('pengumumanModal');
+            const idInput = document.getElementById('pengumumanId');
+            
+            // Load existing data from pengumuman table
+            try {
+                const { data, error } = await supabaseClient
+                    .from('pengumuman')
+                    .select('*')
+                    .limit(1)
+                    .single();
+
+                if (error && error.code !== 'PGRST116') {
+                    console.error('Error loading pengumuman data:', error);
+                }
+
+                if (data) {
+                    // Existing data found
+                    existingPengumumanData = data;
+                    idInput.value = data.id;
+                    document.getElementById('pengumumanDeskripsi').value = data.deskripsi || '';
+                    document.getElementById('pengumumanAdminRole').value = data.admin_role || '';
+                } else {
+                    // No existing data, create new
+                    existingPengumumanData = null;
+                    const timestamp = Date.now();
+                    idInput.value = `PNG${timestamp}`;
+                    document.getElementById('pengumumanDeskripsi').value = '';
+                    document.getElementById('pengumumanAdminRole').value = '';
+                }
+            } catch (err) {
+                console.error('Error loading pengumuman data:', err);
+                // On error, treat as new data
+                existingPengumumanData = null;
+                const timestamp = Date.now();
+                idInput.value = `PNG${timestamp}`;
+                document.getElementById('pengumumanDeskripsi').value = '';
+                document.getElementById('pengumumanAdminRole').value = '';
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closePengumumanModal() {
+            const modal = document.getElementById('pengumumanModal');
+            modal.classList.remove('active');
+            
+            // Clear form
+            document.getElementById('pengumumanId').value = '';
+            document.getElementById('pengumumanDeskripsi').value = '';
+            document.getElementById('pengumumanAdminRole').value = '';
+        }
+
+        async function resetPengumumanForm() {
+            if (!supabaseClient) {
+                alert('Supabase client tidak tersedia. Silakan refresh halaman.');
+                return;
+            }
+
+            if (existingPengumumanData) {
+                // Delete existing data from pengumuman table
+                try {
+                    const { error } = await supabaseClient
+                        .from('pengumuman')
+                        .delete()
+                        .eq('id', existingPengumumanData.id);
+
+                    if (error) throw error;
+
+                    alert('Data pengumuman berhasil dihapus!');
+                    existingPengumumanData = null;
+                } catch (err) {
+                    console.error('Error deleting pengumuman:', err);
+                    alert('Gagal menghapus pengumuman: ' + err.message);
+                    return;
+                }
+            }
+
+            // Clear form and regenerate ID for new entry
+            document.getElementById('pengumumanDeskripsi').value = '';
+            document.getElementById('pengumumanAdminRole').value = '';
+            
+            const timestamp = Date.now();
+            document.getElementById('pengumumanId').value = `PNG${timestamp}`;
+        }
+
+        async function savePengumuman() {
+            if (!supabaseClient) {
+                alert('Supabase client tidak tersedia. Silakan refresh halaman.');
+                return;
+            }
+
+            const id = document.getElementById('pengumumanId').value;
+            const deskripsi = document.getElementById('pengumumanDeskripsi').value;
+            const adminRole = document.getElementById('pengumumanAdminRole').value;
+
+            if (!deskripsi || !adminRole) {
+                alert('Mohon lengkapi semua field!');
+                return;
+            }
+
+            try {
+                if (existingPengumumanData) {
+                    // Update existing data
+                    const { data, error } = await supabaseClient
+                        .from('pengumuman')
+                        .update({
+                            deskripsi: deskripsi,
+                            admin_role: adminRole
+                        })
+                        .eq('id', existingPengumumanData.id);
+
+                    if (error) throw error;
+
+                    alert('Pengumuman berhasil diupdate!');
+                } else {
+                    // Insert new data
+                    const { data, error } = await supabaseClient
+                        .from('pengumuman')
+                        .insert([
+                            {
+                                id: id,
+                                deskripsi: deskripsi,
+                                admin_role: adminRole
+                            }
+                        ]);
+
+                    if (error) throw error;
+
+                    alert('Pengumuman berhasil disimpan!');
+                }
+
+                closePengumumanModal();
+            } catch (err) {
+                console.error('Error saving pengumuman:', err);
+                alert('Gagal menyimpan pengumuman: ' + err.message);
+            }
+        }
+
+        // Event listeners for modal
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('closePengumumanModal').addEventListener('click', closePengumumanModal);
+            document.getElementById('cancelPengumumanBtn').addEventListener('click', closePengumumanModal);
+            document.getElementById('resetPengumumanBtn').addEventListener('click', resetPengumumanForm);
+            document.getElementById('savePengumumanBtn').addEventListener('click', savePengumuman);
+
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                const modal = document.getElementById('pengumumanModal');
+                if (e.target === modal) {
+                    closePengumumanModal();
+                }
+            });
+        });
 
         // --- Tampil Tanggal ---
         function updateNavbarDate() {
