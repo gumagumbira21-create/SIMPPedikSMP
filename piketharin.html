@@ -156,6 +156,40 @@
         .form-group input[readonly] { background-color: #f3f4f6; cursor: not-allowed; }
 
         .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px; }
+
+        .jurnal-tabs-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 15px;
+        }
+        .jurnal-tab-btn {
+            background: #f4f6f9;
+            border: 1px solid #e2e5e9;
+            border-bottom: none;
+            color: #555;
+            padding: 8px 16px;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .jurnal-tab-btn:hover {
+            background: #eaecf1;
+        }
+        .jurnal-tab-btn.active {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        .jurnal-tab-pane {
+            display: none;
+        }
+        .jurnal-tab-pane.active {
+            display: block;
+        }
         .btn-secondary { background-color: #e2e8f0; color: #475569; }
         .btn-secondary:hover { background-color: #cbd5e1; }
 
@@ -454,30 +488,11 @@
             </div>
             <div class="modal-body">
                 <div id="jurnalDateDisplay" style="font-size: 1.2rem; font-weight: bold; color: var(--primary-color); margin-bottom: 20px; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 10px;"></div>
-                <form id="jurnalForm">
-                    <div class="table-responsive">
-                        <table class="custom-table">
-                            <thead>
-                                <tr>
-                                    <th>ID Piket</th>
-                                    <th>ID Petugas</th>
-                                    <th>Nama Siswa</th>
-                                    <th>NISN</th>
-                                    <th>Kelas</th>
-                                    <th>Area</th>
-                                    <th>Status</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="jurnalInputTableBody">
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" id="cancelJurnalBtn">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                </form>
+                <div id="jurnalTabsNav" class="jurnal-tabs-nav"></div>
+                <div id="jurnalTabsContent" class="jurnal-tabs-content"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelJurnalBtn">Tutup</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1237,8 +1252,21 @@
         const closeJurnalModal = document.getElementById('closeJurnalModal');
         const cancelJurnalBtn = document.getElementById('cancelJurnalBtn');
         const jurnalDateDisplay = document.getElementById('jurnalDateDisplay');
-        const jurnalInputTableBody = document.getElementById('jurnalInputTableBody');
-        const jurnalForm = document.getElementById('jurnalForm');
+        const jurnalTabsNav = document.getElementById('jurnalTabsNav');
+        const jurnalTabsContent = document.getElementById('jurnalTabsContent');
+
+        function slugifyKelasJurnal(kelas) {
+            return String(kelas).replace(/[^a-zA-Z0-9]/g, '_');
+        }
+
+        function switchJurnalTab(kelasKey) {
+            jurnalTabsNav.querySelectorAll('.jurnal-tab-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.tab === kelasKey);
+            });
+            jurnalTabsContent.querySelectorAll('.jurnal-tab-pane').forEach(p => {
+                p.classList.toggle('active', p.id === `tabPane_${kelasKey}`);
+            });
+        }
 
         if (inputJurnalBtn) {
             inputJurnalBtn.addEventListener('click', async () => {
@@ -1250,7 +1278,8 @@
                 
                 jurnalDateDisplay.textContent = `${weekday}, ${day} - ${month} - ${year}`;
 
-                jurnalInputTableBody.innerHTML = '<tr><td colspan="8" style="text-align:center;">Memuat data...</td></tr>';
+                jurnalTabsNav.innerHTML = '';
+                jurnalTabsContent.innerHTML = '<div style="text-align:center; padding:20px;">Memuat data...</div>';
                 jurnalModal.classList.add('active');
 
                 try {
@@ -1260,46 +1289,107 @@
                         .from('datapiketsiswa')
                         .select('*')
                         .ilike('id_piket', `%${hariIni}%`)
+                        .order('kelas')
                         .order('id_piket');
 
                     if (error) throw error;
 
-                    jurnalInputTableBody.innerHTML = '';
+                    jurnalTabsNav.innerHTML = '';
+                    jurnalTabsContent.innerHTML = '';
                     
                     if (!data || data.length === 0) {
-                        jurnalInputTableBody.innerHTML = `<tr><td colspan="8" style="text-align:center;">Tidak ada data petugas piket untuk hari ${weekday}.</td></tr>`;
+                        jurnalTabsContent.innerHTML = `<div style="text-align:center; padding:20px;">Tidak ada data petugas piket untuk hari ${weekday}.</div>`;
                         return;
                     }
 
-                    data.forEach((item, index) => {
-                        const row = document.createElement('tr');
-                        const dateCode = now.toISOString().slice(0,10).replace(/-/g, '');
-                        const random3 = Math.floor(100 + Math.random() * 900);
-                        const journalId = `JRN-${dateCode}-${item.nisn || index}.${random3}`;
-                        
-                        row.innerHTML = `
-                            <td><input type="text" name="id_piket[]" value="${journalId}" readonly style="width:100%; border:none; background:transparent; font-size:0.9rem;"></td>
-                            <td><input type="text" name="id_petugas[]" value="${item.id_piket}" readonly style="width:100%; border:none; background:transparent; font-size:0.9rem;"></td>
-                            <td>${item.nama_siswa} <input type="hidden" name="nama_siswa[]" value="${item.nama_siswa}"></td>
-                            <td>${item.nisn || '-'} <input type="hidden" name="nisn[]" value="${item.nisn || ''}"></td>
-                            <td>${item.kelas} <input type="hidden" name="kelas[]" value="${item.kelas}"></td>
-                            <td>${item.area} <input type="hidden" name="area[]" value="${item.area}"></td>
-                            <td>
-                                <div style="display:flex; gap:15px;">
-                                    <label style="font-weight:normal; cursor:pointer; display:flex; align-items:center; gap:5px;"><input type="radio" name="status_${index}" value="Ya" checked> Ya</label>
-                                    <label style="font-weight:normal; cursor:pointer; display:flex; align-items:center; gap:5px;"><input type="radio" name="status_${index}" value="Tidak"> Tidak</label>
-                                </div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-danger" style="padding:4px 8px; font-size:0.8rem;" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button>
-                            </td>
+                    // Kelompokkan data berdasarkan kelas
+                    const groupedByKelas = {};
+                    data.forEach(item => {
+                        const kelas = item.kelas || 'Tanpa Kelas';
+                        if (!groupedByKelas[kelas]) groupedByKelas[kelas] = [];
+                        groupedByKelas[kelas].push(item);
+                    });
+
+                    const kelasList = Object.keys(groupedByKelas).sort();
+                    const dateCode = now.toISOString().slice(0,10).replace(/-/g, '');
+
+                    kelasList.forEach((kelas, kIndex) => {
+                        const kelasKey = slugifyKelasJurnal(kelas);
+
+                        // Tombol tab
+                        const tabBtn = document.createElement('button');
+                        tabBtn.type = 'button';
+                        tabBtn.className = 'jurnal-tab-btn' + (kIndex === 0 ? ' active' : '');
+                        tabBtn.dataset.tab = kelasKey;
+                        tabBtn.textContent = `${kelas} (${groupedByKelas[kelas].length})`;
+                        tabBtn.addEventListener('click', () => switchJurnalTab(kelasKey));
+                        jurnalTabsNav.appendChild(tabBtn);
+
+                        // Isi tab
+                        const pane = document.createElement('div');
+                        pane.className = 'jurnal-tab-pane' + (kIndex === 0 ? ' active' : '');
+                        pane.id = `tabPane_${kelasKey}`;
+                        pane.innerHTML = `
+                            <div class="table-responsive">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID Piket</th>
+                                            <th>ID Petugas</th>
+                                            <th>Nama Siswa</th>
+                                            <th>NISN</th>
+                                            <th>Kelas</th>
+                                            <th>Area</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="jurnalInputTableBody_${kelasKey}"></tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary btn-simpan-kelas" data-kelas-key="${kelasKey}">
+                                    <i class="fas fa-save"></i> Simpan Kelas ${kelas}
+                                </button>
+                            </div>
                         `;
-                        jurnalInputTableBody.appendChild(row);
+                        jurnalTabsContent.appendChild(pane);
+
+                        const tbody = pane.querySelector(`#jurnalInputTableBody_${kelasKey}`);
+
+                        groupedByKelas[kelas].forEach((item, index) => {
+                            const row = document.createElement('tr');
+                            const random3 = Math.floor(100 + Math.random() * 900);
+                            const journalId = `JRN-${dateCode}-${item.nisn || index}.${random3}`;
+
+                            row.innerHTML = `
+                                <td><input type="text" name="id_piket[]" value="${journalId}" readonly style="width:100%; border:none; background:transparent; font-size:0.9rem;"></td>
+                                <td><input type="text" name="id_petugas[]" value="${item.id_piket}" readonly style="width:100%; border:none; background:transparent; font-size:0.9rem;"></td>
+                                <td>${item.nama_siswa} <input type="hidden" name="nama_siswa[]" value="${item.nama_siswa}"></td>
+                                <td>${item.nisn || '-'} <input type="hidden" name="nisn[]" value="${item.nisn || ''}"></td>
+                                <td>${item.kelas} <input type="hidden" name="kelas[]" value="${item.kelas}"></td>
+                                <td>${item.area} <input type="hidden" name="area[]" value="${item.area}"></td>
+                                <td>
+                                    <div style="display:flex; gap:15px;">
+                                        <label style="font-weight:normal; cursor:pointer; display:flex; align-items:center; gap:5px;"><input type="radio" name="status_${kelasKey}_${index}" value="Ya" checked> Ya</label>
+                                        <label style="font-weight:normal; cursor:pointer; display:flex; align-items:center; gap:5px;"><input type="radio" name="status_${kelasKey}_${index}" value="Tidak"> Tidak</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger" style="padding:4px 8px; font-size:0.8rem;" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button>
+                                </td>
+                            `;
+                            tbody.appendChild(row);
+                        });
+                    });
+
+                    jurnalTabsContent.querySelectorAll('.btn-simpan-kelas').forEach(btn => {
+                        btn.addEventListener('click', () => simpanJurnalPerKelas(btn.dataset.kelasKey, btn));
                     });
 
                 } catch (err) {
                     console.error(err);
-                    jurnalInputTableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:red;">Error: ${err.message}</td></tr>`;
+                    jurnalTabsContent.innerHTML = `<div style="text-align:center; color:red; padding:20px;">Error: ${err.message}</div>`;
                 }
             });
         }
@@ -1310,105 +1400,110 @@
         if (closeJurnalModal) closeJurnalModal.addEventListener('click', closeJurnalModalFunc);
         if (cancelJurnalBtn) cancelJurnalBtn.addEventListener('click', closeJurnalModalFunc);
 
-        if (jurnalForm) {
-            jurnalForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const submitBtn = jurnalForm.querySelector('button[type="submit"]');
-                const originalText = submitBtn.textContent;
-                submitBtn.textContent = 'Menyimpan...';
-                submitBtn.disabled = true;
+        async function simpanJurnalPerKelas(kelasKey, btn) {
+            const tbody = document.getElementById(`jurnalInputTableBody_${kelasKey}`);
+            if (!tbody) return;
 
-                try {
-                    const rows = jurnalInputTableBody.querySelectorAll('tr');
-                    const inserts = [];
-                    const now = new Date();
-                    const tanggal = now.toISOString().split('T')[0]; 
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Menyimpan...';
+            btn.disabled = true;
 
-                    rows.forEach((row, index) => {
-                        const idPiket = row.querySelector('input[name="id_piket[]"]').value;
-                        const idPetugas = row.querySelector('input[name="id_petugas[]"]').value;
-                        const namaSiswa = row.querySelector('input[name="nama_siswa[]"]').value;
-                        const nisn = row.querySelector('input[name="nisn[]"]').value;
-                        const kelas = row.querySelector('input[name="kelas[]"]').value;
-                        const area = row.querySelector('input[name="area[]"]').value;
-                        const status = row.querySelector(`input[type="radio"]:checked`)?.value || 'Tidak';
+            try {
+                const rows = tbody.querySelectorAll('tr');
+                const inserts = [];
+                const now = new Date();
+                const tanggal = now.toISOString().split('T')[0];
 
-                        inserts.push({
-                            id_piket: idPiket,
-                            tanggal: tanggal,
-                            id_petugas: idPetugas,
-                            nama_siswa: namaSiswa,
-                            nisn: nisn || null,
-                            kelas: kelas,
-                            area: area,
-                            status: status
-                        });
+                rows.forEach((row) => {
+                    const idPiket = row.querySelector('input[name="id_piket[]"]').value;
+                    const idPetugas = row.querySelector('input[name="id_petugas[]"]').value;
+                    const namaSiswa = row.querySelector('input[name="nama_siswa[]"]').value;
+                    const nisn = row.querySelector('input[name="nisn[]"]').value;
+                    const kelas = row.querySelector('input[name="kelas[]"]').value;
+                    const area = row.querySelector('input[name="area[]"]').value;
+                    const status = row.querySelector(`input[type="radio"]:checked`)?.value || 'Tidak';
+
+                    inserts.push({
+                        id_piket: idPiket,
+                        tanggal: tanggal,
+                        id_petugas: idPetugas,
+                        nama_siswa: namaSiswa,
+                        nisn: nisn || null,
+                        kelas: kelas,
+                        area: area,
+                        status: status
                     });
+                });
 
-                    if (inserts.length === 0) {
-                        throw new Error("Tidak ada data untuk disimpan.");
+                if (inserts.length === 0) {
+                    throw new Error("Tidak ada data untuk disimpan pada kelas ini.");
+                }
+
+                const { data: existingData, error: checkError } = await supabaseClient
+                    .from('jurnalpiket')
+                    .select('id_petugas')
+                    .eq('tanggal', tanggal);
+
+                if (checkError) throw checkError;
+
+                const existingIds = new Set(existingData.map(item => item.id_petugas));
+                const duplicates = [];
+                const finalInserts = [];
+
+                inserts.forEach(item => {
+                    if (existingIds.has(item.id_petugas)) {
+                        duplicates.push(item.nama_siswa);
+                    } else {
+                        finalInserts.push(item);
                     }
+                });
 
-                    const { data: existingData, error: checkError } = await supabaseClient
+                if (finalInserts.length > 0) {
+                    const { error: insertError } = await supabaseClient
                         .from('jurnalpiket')
-                        .select('id_petugas')
-                        .eq('tanggal', tanggal);
+                        .insert(finalInserts);
 
-                    if (checkError) throw checkError;
+                    if (insertError) throw insertError;
+                }
 
-                    const existingIds = new Set(existingData.map(item => item.id_petugas));
-                    const duplicates = [];
-                    const finalInserts = [];
+                loadJurnalData();
 
-                    inserts.forEach(item => {
-                        if (existingIds.has(item.id_petugas)) {
-                            duplicates.push(item.nama_siswa);
-                        } else {
-                            finalInserts.push(item);
-                        }
+                if (duplicates.length > 0) {
+                    const duplicateModal = document.getElementById('duplicateModal');
+                    const duplicateMessage = document.getElementById('duplicateMessage');
+
+                    let msg = `<strong>Petugas Piket berikut sudah diinput untuk tanggal ini:</strong><br><ul style="margin: 10px 0 0 20px; padding: 0;">`;
+                    duplicates.forEach(name => {
+                        msg += `<li>${name}</li>`;
                     });
+                    msg += `</ul><br>`;
 
                     if (finalInserts.length > 0) {
-                        const { error: insertError } = await supabaseClient
-                            .from('jurnalpiket')
-                            .insert(finalInserts);
-
-                        if (insertError) throw insertError;
-                    }
-
-                    closeJurnalModalFunc();
-                    loadJurnalData(); 
-
-                    if (duplicates.length > 0) {
-                        const duplicateModal = document.getElementById('duplicateModal');
-                        const duplicateMessage = document.getElementById('duplicateMessage');
-                        
-                        let msg = `<strong>Petugas Piket berikut sudah diinput untuk tanggal ini:</strong><br><ul style="margin: 10px 0 0 20px; padding: 0;">`;
-                        duplicates.forEach(name => {
-                            msg += `<li>${name}</li>`;
-                        });
-                        msg += `</ul><br>`;
-                        
-                        if (finalInserts.length > 0) {
-                            msg += `<span style="color: #10b981; font-weight: bold;">Data lainnya (${finalInserts.length} siswa) berhasil disimpan.</span>`;
-                        } else {
-                            msg += `<span style="color: #ef4444; font-weight: bold;">Tidak ada data baru yang disimpan.</span>`;
-                        }
-                        
-                        duplicateMessage.innerHTML = msg;
-                        duplicateModal.classList.add('active');
+                        msg += `<span style="color: #10b981; font-weight: bold;">Data lainnya (${finalInserts.length} siswa) berhasil disimpan.</span>`;
                     } else {
-                        alert('Data Jurnal Piket berhasil disimpan!');
+                        msg += `<span style="color: #ef4444; font-weight: bold;">Tidak ada data baru yang disimpan.</span>`;
                     }
 
-                } catch (err) {
-                    console.error(err);
-                    alert('Gagal menyimpan: ' + err.message);
-                } finally {
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
+                    duplicateMessage.innerHTML = msg;
+                    duplicateModal.classList.add('active');
+                } else {
+                    alert('Data Jurnal Piket kelas ini berhasil disimpan!');
                 }
-            });
+
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#10b981;">Data pada kelas ini sudah tersimpan.</td></tr>';
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-check"></i> Tersimpan';
+                return;
+
+            } catch (err) {
+                console.error(err);
+                alert('Gagal menyimpan: ' + err.message);
+            } finally {
+                if (btn.innerHTML === 'Menyimpan...') {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            }
         }
 
         let jurnalDataList = [];
