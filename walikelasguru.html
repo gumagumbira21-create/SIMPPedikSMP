@@ -424,14 +424,42 @@
         #inputAbsensiModal .custom-table td {
             padding: 6px 8px;
             font-size: 0.78rem;
+            white-space: nowrap;
+        }
+        #inputAbsensiModal .custom-table {
+            min-width: 950px;
+        }
+        #inputAbsensiModal .table-scroll-wrapper {
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 320px;
+            border: 1px solid #374151;
+            border-radius: 6px;
+        }
+        #inputAbsensiModal .table-scroll-wrapper::-webkit-scrollbar {
+            height: 12px;
+        }
+        #inputAbsensiModal .table-scroll-wrapper::-webkit-scrollbar-thumb {
+            background-color: #4b5563;
+            border-radius: 6px;
+        }
+        #inputAbsensiModal .table-scroll-wrapper::-webkit-scrollbar-track {
+            background-color: #1f2937;
         }
         #inputAbsensiModal .statusBtn {
-            padding: 3px 7px;
-            font-size: 0.68rem;
-            border-radius: 4px;
+            padding: 0;
+            width: 26px;
+            height: 26px;
+            min-width: 26px;
+            font-size: 0.72rem;
+            border-radius: 5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         #inputAbsensiModal .statusBtnGroup {
             gap: 4px;
+            flex-wrap: nowrap;
         }
         #inputAbsensiModal .form-group label {
             font-size: 0.82rem;
@@ -900,8 +928,17 @@
         </div>
     </div>
 
+    <div id="absensiSudahAdaModal" class="modal" style="z-index: 2100;">
+        <div class="modal-content" style="text-align: center; max-width: 400px;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 40px; color: #f59e0b; margin-bottom: 15px;"></i>
+            <h3 style="margin: 0 0 10px;">Absensi Sudah Diisi</h3>
+            <p id="absensiSudahAdaMessage" style="color: #666; margin-bottom: 20px;">Anda sudah melakukan absensi hari ini.</p>
+            <button onclick="document.getElementById('absensiSudahAdaModal').classList.remove('active')" style="background: #f59e0b; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600; width: 100%;">Tutup</button>
+        </div>
+    </div>
+
     <div id="inputAbsensiModal" class="modal">
-        <div class="modal-content" style="max-width: 650px; text-align: left;">
+        <div class="modal-content" style="max-width: 1100px; text-align: left;">
             <div class="modal-header">
                 <h3><i class="fas fa-clipboard-check" style="color: #10b981; margin-right: 8px;"></i>Input Absensi Kehadiran</h3>
                 <span class="close-modal" onclick="document.getElementById('inputAbsensiModal').classList.remove('active')">&times;</span>
@@ -914,25 +951,31 @@
                 <div class="form-group">
                     <label>Set Semua Status</label>
                     <div id="bulkStatusAbsensi" class="statusBtnGroup" style="display: flex; gap: 8px;">
-                        <button type="button" class="statusBtn" data-status="Hadir" onclick="applyBulkStatus(this)">Hadir</button>
-                        <button type="button" class="statusBtn" data-status="Sakit" onclick="applyBulkStatus(this)">Sakit</button>
-                        <button type="button" class="statusBtn" data-status="Ijin" onclick="applyBulkStatus(this)">Ijin</button>
-                        <button type="button" class="statusBtn" data-status="Alpa" onclick="applyBulkStatus(this)">Alpa</button>
+                        <button type="button" class="statusBtn" data-status="Hadir" title="Hadir" onclick="applyBulkStatus(this)">H</button>
+                        <button type="button" class="statusBtn" data-status="Sakit" title="Sakit" onclick="applyBulkStatus(this)">S</button>
+                        <button type="button" class="statusBtn" data-status="Ijin" title="Ijin" onclick="applyBulkStatus(this)">I</button>
+                        <button type="button" class="statusBtn" data-status="Alpa" title="Alpa" onclick="applyBulkStatus(this)">A</button>
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Status Kehadiran Per Siswa</label>
-                    <div style="max-height: 320px; overflow-y: auto; border: 1px solid #374151; border-radius: 6px;">
+                    <div class="table-scroll-wrapper" style="max-height: 320px; overflow-y: auto; overflow-x: auto; border: 1px solid #374151; border-radius: 6px;">
                         <table class="custom-table" style="margin: 0;">
                             <thead>
                                 <tr>
                                     <th style="background-color: #3b82f6; color: white;">No</th>
+                                    <th style="background-color: #3b82f6; color: white;">Kode Absensi</th>
+                                    <th style="background-color: #3b82f6; color: white;">Kode Mapping</th>
+                                    <th style="background-color: #3b82f6; color: white;">Hari</th>
+                                    <th style="background-color: #3b82f6; color: white;">Tanggal</th>
+                                    <th style="background-color: #3b82f6; color: white;">Kelas</th>
+                                    <th style="background-color: #3b82f6; color: white;">NISN</th>
                                     <th style="background-color: #3b82f6; color: white;">Nama Siswa</th>
-                                    <th style="background-color: #3b82f6; color: white; text-align: center;">Status</th>
+                                    <th style="background-color: #3b82f6; color: white; text-align: center;">Status Kehadiran</th>
                                 </tr>
                             </thead>
                             <tbody id="inputAbsensiTbody">
-                                <tr><td colspan="3" style="text-align: center;">Memuat data siswa...</td></tr>
+                                <tr><td colspan="9" style="text-align: center;">Memuat data siswa...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -2329,6 +2372,94 @@
         const tanggalAbsensiInput = document.getElementById('tanggalAbsensiInput');
         const bulkStatusAbsensi = document.getElementById('bulkStatusAbsensi');
         const inputAbsensiTbody = document.getElementById('inputAbsensiTbody');
+        const absensiSudahAdaModal = document.getElementById('absensiSudahAdaModal');
+
+        function toNisnNumeric(nisnText) {
+            if (!nisnText || nisnText === '-') return null;
+            const cleaned = nisnText.replace(/\D/g, '');
+            if (cleaned === '') return null;
+            const num = Number(cleaned);
+            return isNaN(num) ? null : num;
+        }
+
+        async function loadAbsensiRows() {
+            const kelas = document.getElementById('kelasTitle').textContent;
+            const tanggal = tanggalAbsensiInput.value;
+            if (!kelas || !tanggal) return;
+
+            inputAbsensiTbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">Memuat data siswa...</td></tr>';
+
+            try {
+                const { data: students, error: studentError } = await absensiClient
+                    .from('mappingsiswa')
+                    .select('nama_siswa, nisn, kelas, kode_maping')
+                    .eq('kelas', kelas)
+                    .order('nama_siswa', { ascending: true });
+
+                if (studentError) throw studentError;
+
+                if (!students || students.length === 0) {
+                    inputAbsensiTbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">Belum ada data siswa di kelas ini.</td></tr>';
+                    return;
+                }
+
+                const { data: existingAbsensi, error: absensiError } = await absensiClient
+                    .from('absensiswa')
+                    .select('*')
+                    .eq('kelas', kelas)
+                    .eq('tanggal', tanggal);
+
+                if (absensiError) throw absensiError;
+
+                const attendanceMap = {};
+                (existingAbsensi || []).forEach(rec => {
+                    attendanceMap[rec.kode_mapping] = rec;
+                });
+
+                inputAbsensiTbody.innerHTML = '';
+                students.forEach((s, index) => {
+                    const row = document.createElement('tr');
+                    const kodeMapping = s.kode_maping || '';
+                    const existing = attendanceMap[kodeMapping];
+
+                    let kodeAbsen;
+                    let statusSelected = 'Hadir';
+                    if (existing) {
+                        kodeAbsen = existing.kode_absen;
+                        statusSelected = existing.status_kehadiran || 'Hadir';
+                    } else {
+                        const random4 = String(Math.floor(1000 + Math.random() * 9000));
+                        kodeAbsen = `${kodeMapping}.${random4}`;
+                    }
+
+                    row.innerHTML = `
+                        <td style="text-align: center;">${index + 1}</td>
+                        <td class="kodeAbsenCell" data-kode-mapping="${kodeMapping}">${kodeAbsen}</td>
+                        <td>${kodeMapping}</td>
+                        <td class="hariCell"></td>
+                        <td class="tanggalCell"></td>
+                        <td>${s.kelas || kelas}</td>
+                        <td>${s.nisn || '-'}</td>
+                        <td>${s.nama_siswa}</td>
+                        <td style="text-align: center;">
+                            <div class="statusAbsensiGroup statusBtnGroup" data-nama="${s.nama_siswa}" data-selected="${statusSelected}" style="display: flex; gap: 5px; justify-content: center; flex-wrap: nowrap;">
+                                <button type="button" class="statusBtn ${statusSelected === 'Hadir' ? 'active' : ''}" data-status="Hadir" title="Hadir" onclick="setStatusAbsensi(this)">H</button>
+                                <button type="button" class="statusBtn ${statusSelected === 'Sakit' ? 'active' : ''}" data-status="Sakit" title="Sakit" onclick="setStatusAbsensi(this)">S</button>
+                                <button type="button" class="statusBtn ${statusSelected === 'Ijin' ? 'active' : ''}" data-status="Ijin" title="Ijin" onclick="setStatusAbsensi(this)">I</button>
+                                <button type="button" class="statusBtn ${statusSelected === 'Alpa' ? 'active' : ''}" data-status="Alpa" title="Alpa" onclick="setStatusAbsensi(this)">A</button>
+                                <button type="button" class="statusBtn" title="Edit" style="background-color: #f59e0b; border-color: #f59e0b; color: white;" onclick="editAbsensiPerSiswa(this)"><i class="fas fa-pencil-alt"></i></button>
+                            </div>
+                        </td>
+                    `;
+                    inputAbsensiTbody.appendChild(row);
+                });
+
+                updateHariTanggalDisplay();
+            } catch (err) {
+                console.error('Error loading siswa untuk absensi:', err);
+                inputAbsensiTbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: red;">Gagal memuat data: ${err.message}</td></tr>`;
+            }
+        }
 
         async function openInputAbsensiModal() {
             const kelas = document.getElementById('kelasTitle').textContent;
@@ -2342,44 +2473,23 @@
             const localDate = new Date(today.getTime() - (offset * 60 * 1000));
             tanggalAbsensiInput.value = localDate.toISOString().split('T')[0];
             bulkStatusAbsensi.querySelectorAll('.statusBtn').forEach(b => b.classList.remove('active'));
-            inputAbsensiTbody.innerHTML = '<tr><td colspan="3" style="text-align: center;">Memuat data siswa...</td></tr>';
             inputAbsensiModal.classList.add('active');
 
-            try {
-                const { data: students, error } = await absensiClient
-                    .from('mappingsiswa')
-                    .select('nama_siswa')
-                    .eq('kelas', kelas)
-                    .order('nama_siswa', { ascending: true });
+            await loadAbsensiRows();
+        }
 
-                if (error) throw error;
+        function updateHariTanggalDisplay() {
+            if (!tanggalAbsensiInput.value) return;
+            const [year, month, day] = tanggalAbsensiInput.value.split('-').map(Number);
+            const selectedDate = new Date(year, month - 1, day);
+            const hari = new Intl.DateTimeFormat('id-ID', { weekday: 'long' }).format(selectedDate);
+            const tanggal = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }).format(selectedDate);
+            inputAbsensiTbody.querySelectorAll('.hariCell').forEach(el => el.textContent = hari);
+            inputAbsensiTbody.querySelectorAll('.tanggalCell').forEach(el => el.textContent = tanggal);
+        }
 
-                if (!students || students.length === 0) {
-                    inputAbsensiTbody.innerHTML = '<tr><td colspan="3" style="text-align: center;">Belum ada data siswa di kelas ini.</td></tr>';
-                    return;
-                }
-
-                inputAbsensiTbody.innerHTML = '';
-                students.forEach((s, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td style="text-align: center;">${index + 1}</td>
-                        <td>${s.nama_siswa}</td>
-                        <td style="text-align: center;">
-                            <div class="statusAbsensiGroup statusBtnGroup" data-nama="${s.nama_siswa}" data-selected="Hadir" style="display: flex; gap: 5px; justify-content: center;">
-                                <button type="button" class="statusBtn active" data-status="Hadir" onclick="setStatusAbsensi(this)">Hadir</button>
-                                <button type="button" class="statusBtn" data-status="Sakit" onclick="setStatusAbsensi(this)">Sakit</button>
-                                <button type="button" class="statusBtn" data-status="Ijin" onclick="setStatusAbsensi(this)">Ijin</button>
-                                <button type="button" class="statusBtn" data-status="Alpa" onclick="setStatusAbsensi(this)">Alpa</button>
-                            </div>
-                        </td>
-                    `;
-                    inputAbsensiTbody.appendChild(row);
-                });
-            } catch (err) {
-                console.error('Error loading siswa untuk absensi:', err);
-                inputAbsensiTbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: red;">Gagal memuat data: ${err.message}</td></tr>`;
-            }
+        if (tanggalAbsensiInput) {
+            tanggalAbsensiInput.addEventListener('change', loadAbsensiRows);
         }
 
         if (inputAbsensiBtn) {
@@ -2389,7 +2499,7 @@
         function setStatusAbsensi(btn) {
             const group = btn.parentElement;
             group.dataset.selected = btn.dataset.status;
-            group.querySelectorAll('.statusBtn').forEach(b => b.classList.remove('active'));
+            group.querySelectorAll('.statusBtn[data-status]').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         }
 
@@ -2400,11 +2510,56 @@
             const status = btn.dataset.status;
             document.querySelectorAll('.statusAbsensiGroup').forEach(group => {
                 group.dataset.selected = status;
-                group.querySelectorAll('.statusBtn').forEach(b => {
+                group.querySelectorAll('.statusBtn[data-status]').forEach(b => {
                     b.classList.toggle('active', b.dataset.status === status);
                 });
             });
         }
+
+        window.editAbsensiPerSiswa = async function(btn) {
+            const group = btn.parentElement;
+            const row = group.closest('tr');
+            const kodeAbsenCell = row.querySelector('.kodeAbsenCell');
+            const kodeAbsen = kodeAbsenCell ? kodeAbsenCell.textContent.trim() : '';
+            const kodeMapping = kodeAbsenCell ? kodeAbsenCell.dataset.kodeMapping : '';
+            const hari = row.querySelector('.hariCell') ? row.querySelector('.hariCell').textContent.trim() : '';
+            const tanggal = tanggalAbsensiInput.value;
+            const kelas = document.getElementById('kelasTitle').textContent;
+            const nisnText = row.children[6] ? row.children[6].textContent.trim() : '';
+            const nisn = toNisnNumeric(nisnText);
+            const namaSiswa = group.dataset.nama;
+            const status = group.dataset.selected;
+
+            if (!confirm(`Update data absensi untuk ${namaSiswa}?\nStatus: ${status}`)) return;
+
+            const originalText = btn.textContent;
+            btn.textContent = '...';
+            btn.disabled = true;
+
+            try {
+                const { error } = await absensiClient
+                    .from('absensiswa')
+                    .upsert({
+                        kode_absen: kodeAbsen,
+                        kode_mapping: kodeMapping,
+                        hari: hari,
+                        tanggal: tanggal,
+                        kelas: kelas,
+                        nisn: nisn,
+                        nama_siswa: namaSiswa,
+                        status_kehadiran: status
+                    }, { onConflict: 'kode_absen' });
+
+                if (error) throw error;
+                alert('Data absensi berhasil diperbarui.');
+            } catch (err) {
+                console.error('Error updating absensi:', err);
+                alert('Gagal update: ' + err.message);
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        };
 
         if (inputAbsensiForm) {
             inputAbsensiForm.addEventListener('submit', async (e) => {
@@ -2428,21 +2583,41 @@
                 submitBtn.textContent = 'Menyimpan...';
                 submitBtn.disabled = true;
 
-                const records = Array.from(groups).map(group => ({
-                    nama_siswa: group.dataset.nama,
-                    kelas: kelas,
-                    status_kehadiran: group.dataset.selected,
-                    tanggal: tanggal
-                }));
-
                 try {
-                    const { error: deleteError } = await absensiClient
+                    const { count, error: checkError } = await absensiClient
                         .from('absensiswa')
-                        .delete()
+                        .select('*', { count: 'exact', head: true })
                         .eq('kelas', kelas)
                         .eq('tanggal', tanggal);
 
-                    if (deleteError) throw deleteError;
+                    if (checkError) throw checkError;
+
+                    if (count > 0) {
+                        document.getElementById('absensiSudahAdaMessage').textContent = 'Anda sudah melakukan absensi hari ini.';
+                        absensiSudahAdaModal.classList.add('active');
+                        return;
+                    }
+
+                    const records = Array.from(groups).map(group => {
+                        const row = group.closest('tr');
+                        const kodeAbsenCell = row.querySelector('.kodeAbsenCell');
+                        const kodeAbsen = kodeAbsenCell ? kodeAbsenCell.textContent.trim() : '';
+                        const kodeMapping = kodeAbsenCell ? kodeAbsenCell.dataset.kodeMapping : '';
+                        const hari = row.querySelector('.hariCell') ? row.querySelector('.hariCell').textContent.trim() : '';
+                        const nisnText = row.children[6] ? row.children[6].textContent.trim() : '';
+                        const nisn = toNisnNumeric(nisnText);
+
+                        return {
+                            kode_absen: kodeAbsen,
+                            kode_mapping: kodeMapping,
+                            hari: hari,
+                            tanggal: tanggal,
+                            kelas: kelas,
+                            nisn: nisn,
+                            nama_siswa: group.dataset.nama,
+                            status_kehadiran: group.dataset.selected
+                        };
+                    });
 
                     const { error: insertError } = await absensiClient
                         .from('absensiswa')
