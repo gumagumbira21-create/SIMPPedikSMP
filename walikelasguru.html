@@ -412,6 +412,13 @@
         .form-group input[readonly] { background-color: #111827; cursor: not-allowed; }
 
         .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px; }
+        .statusBtn { padding: 6px 14px; border: 1px solid #4b5563; border-radius: 6px; background-color: #374151; color: #d1d5db; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
+        .statusBtn:hover { border-color: #9ca3af; }
+        .statusBtn.active[data-status="Hadir"] { background-color: #10b981; border-color: #10b981; color: #fff; }
+        .statusBtn.active[data-status="Sakit"] { background-color: #3b82f6; border-color: #3b82f6; color: #fff; }
+        .statusBtn.active[data-status="Ijin"] { background-color: #f59e0b; border-color: #f59e0b; color: #fff; }
+        .statusBtn.active[data-status="Alpa"] { background-color: #ef4444; border-color: #ef4444; color: #fff; }
+        .statusBtnGroup .statusBtn { padding: 5px 10px; font-size: 0.8rem; }
         .btn { padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9rem; color: white; display: inline-flex; align-items: center; gap: 5px; transition: opacity 0.2s; }
         .btn:hover { opacity: 0.9; }
         .btn-primary { background: linear-gradient(to right, var(--primary-color), var(--secondary-color)); }
@@ -881,13 +888,12 @@
                 </div>
                 <div class="form-group">
                     <label>Set Semua Status</label>
-                    <select id="bulkStatusAbsensi" style="width: 100%; padding: 10px; background: #374151; border: 1px solid #4b5563; border-radius: 6px; font-size: 0.95rem; color: #fff;">
-                        <option value="">-- Pilih untuk menerapkan ke semua siswa --</option>
-                        <option value="Hadir">Hadir</option>
-                        <option value="Sakit">Sakit</option>
-                        <option value="Ijin">Ijin</option>
-                        <option value="Alpa">Alpa</option>
-                    </select>
+                    <div id="bulkStatusAbsensi" class="statusBtnGroup" style="display: flex; gap: 8px;">
+                        <button type="button" class="statusBtn" data-status="Hadir" onclick="applyBulkStatus(this)">Hadir</button>
+                        <button type="button" class="statusBtn" data-status="Sakit" onclick="applyBulkStatus(this)">Sakit</button>
+                        <button type="button" class="statusBtn" data-status="Ijin" onclick="applyBulkStatus(this)">Ijin</button>
+                        <button type="button" class="statusBtn" data-status="Alpa" onclick="applyBulkStatus(this)">Alpa</button>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Status Kehadiran Per Siswa</label>
@@ -2310,7 +2316,7 @@
             const offset = today.getTimezoneOffset();
             const localDate = new Date(today.getTime() - (offset * 60 * 1000));
             tanggalAbsensiInput.value = localDate.toISOString().split('T')[0];
-            bulkStatusAbsensi.value = '';
+            bulkStatusAbsensi.querySelectorAll('.statusBtn').forEach(b => b.classList.remove('active'));
             inputAbsensiTbody.innerHTML = '<tr><td colspan="3" style="text-align: center;">Memuat data siswa...</td></tr>';
             inputAbsensiModal.classList.add('active');
 
@@ -2335,12 +2341,12 @@
                         <td style="text-align: center;">${index + 1}</td>
                         <td>${s.nama_siswa}</td>
                         <td style="text-align: center;">
-                            <select class="statusAbsensiSelect" data-nama="${s.nama_siswa}" style="padding: 6px; background: #374151; border: 1px solid #4b5563; border-radius: 6px; color: #fff;">
-                                <option value="Hadir" selected>Hadir</option>
-                                <option value="Sakit">Sakit</option>
-                                <option value="Ijin">Ijin</option>
-                                <option value="Alpa">Alpa</option>
-                            </select>
+                            <div class="statusAbsensiGroup statusBtnGroup" data-nama="${s.nama_siswa}" data-selected="Hadir" style="display: flex; gap: 5px; justify-content: center;">
+                                <button type="button" class="statusBtn active" data-status="Hadir" onclick="setStatusAbsensi(this)">Hadir</button>
+                                <button type="button" class="statusBtn" data-status="Sakit" onclick="setStatusAbsensi(this)">Sakit</button>
+                                <button type="button" class="statusBtn" data-status="Ijin" onclick="setStatusAbsensi(this)">Ijin</button>
+                                <button type="button" class="statusBtn" data-status="Alpa" onclick="setStatusAbsensi(this)">Alpa</button>
+                            </div>
                         </td>
                     `;
                     inputAbsensiTbody.appendChild(row);
@@ -2355,12 +2361,22 @@
             inputAbsensiBtn.addEventListener('click', openInputAbsensiModal);
         }
 
-        if (bulkStatusAbsensi) {
-            bulkStatusAbsensi.addEventListener('change', () => {
-                const value = bulkStatusAbsensi.value;
-                if (!value) return;
-                document.querySelectorAll('.statusAbsensiSelect').forEach(sel => {
-                    sel.value = value;
+        function setStatusAbsensi(btn) {
+            const group = btn.parentElement;
+            group.dataset.selected = btn.dataset.status;
+            group.querySelectorAll('.statusBtn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function applyBulkStatus(btn) {
+            btn.parentElement.querySelectorAll('.statusBtn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const status = btn.dataset.status;
+            document.querySelectorAll('.statusAbsensiGroup').forEach(group => {
+                group.dataset.selected = status;
+                group.querySelectorAll('.statusBtn').forEach(b => {
+                    b.classList.toggle('active', b.dataset.status === status);
                 });
             });
         }
@@ -2376,8 +2392,8 @@
                     return;
                 }
 
-                const selects = document.querySelectorAll('.statusAbsensiSelect');
-                if (selects.length === 0) {
+                const groups = document.querySelectorAll('.statusAbsensiGroup');
+                if (groups.length === 0) {
                     alert('Tidak ada data siswa untuk disimpan.');
                     return;
                 }
@@ -2387,10 +2403,10 @@
                 submitBtn.textContent = 'Menyimpan...';
                 submitBtn.disabled = true;
 
-                const records = Array.from(selects).map(sel => ({
-                    nama_siswa: sel.dataset.nama,
+                const records = Array.from(groups).map(group => ({
+                    nama_siswa: group.dataset.nama,
                     kelas: kelas,
-                    status_kehadiran: sel.value,
+                    status_kehadiran: group.dataset.selected,
                     tanggal: tanggal
                 }));
 
