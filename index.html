@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
 
-
-
-    <!-- 🔥 PWA -->
+        <!-- 🔥 PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#667eea">
     <link rel="icon" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
+
+    
+    <!-- Font Awesome (untuk ikon) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- Supabase JS SDK -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -29,11 +31,10 @@
             background-size: cover;
             background-position: center;
             min-height: 100vh;
+            padding: 2rem 0 80px 0;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            overflow-y: auto;
         }
 
         .login-container {
@@ -46,6 +47,7 @@
             transition: transform 0.3s ease;
             display: flex;
             overflow: hidden;
+            display: none;
         }
 
         .login-header {
@@ -105,7 +107,8 @@
             flex: 1;
             padding: 10px;
             border: none;
-            color: #030303;
+            background: transparent;
+            color: #666;
             font-weight: 600;
             font-size: 0.9rem;
             cursor: pointer;
@@ -114,7 +117,7 @@
         }
 
         .role-tab.active {
-            background-color: #12ad55; /* Kuning gelap / Amber */
+            background-color: #FF5722;
             color: #ffffff;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
@@ -233,19 +236,98 @@
         @media (max-width: 768px) {
             .login-container {
                 flex-direction: column;
-                max-width: 90%;
+                max-width: 400px;
                 margin: 20px;
             }
             .login-left {
-                padding: 2rem 1.5rem;
+                padding: 2rem;
             }
-            /* Sesuai permintaan: Logo langsung Slogan, H1 (Nama Sekolah) disembunyikan di mobile */
-            .login-left h1 { display: none; }
+            .login-left h1 { font-size: 1.4rem; }
             .school-logo { width: 80px; }
             .login-right { padding: 2rem; }
-            .brand-logo {
-                width: 120px !important;
-                height: 120px !important;
+        }
+
+        /* Modal Login khusus mobile: cegah konten terpotong & perkecil elemen */
+        @media (max-width: 768px) {
+            #loginModal {
+                align-items: center;
+                padding: 12px;
+                overflow-y: auto;
+            }
+            #loginModal .modal-content {
+                max-height: calc(100vh - 24px);
+                margin: auto;
+                border-radius: 12px;
+                align-items: flex-start;
+            }
+            #loginModal .login-container {
+                margin: 0;
+                max-width: 100%;
+            }
+            #loginModal .login-left {
+                padding: 1.2rem 1.5rem;
+            }
+            #loginModal .school-logo {
+                width: 60px;
+                margin-bottom: 0.8rem;
+            }
+            #loginModal .login-left h1 {
+                font-size: 1.1rem;
+                margin-bottom: 0.4rem;
+            }
+            #loginModal .login-left p {
+                font-size: 0.85rem;
+                line-height: 1.4;
+            }
+            #loginModal .login-right {
+                padding: 1.2rem 1.5rem 1.5rem;
+            }
+            #loginModal .login-header {
+                margin-bottom: 1rem;
+            }
+            #loginModal .login-header h2 {
+                font-size: 1.3rem;
+                margin-bottom: 0.25rem;
+            }
+            #loginModal .login-header p {
+                font-size: 0.8rem;
+            }
+            #loginModal .form-group {
+                margin-bottom: 0.9rem;
+            }
+            #loginModal .form-group label {
+                font-size: 0.8rem;
+                margin-bottom: 0.3rem;
+            }
+            #loginModal .form-group input,
+            #loginModal .form-group select {
+                padding: 0.6rem 0.7rem;
+                font-size: 0.9rem;
+            }
+            #loginModal .role-tab {
+                padding: 7px;
+                font-size: 0.8rem;
+            }
+            #loginModal .btn-login,
+            #loginModal .btn-cancel {
+                padding: 0.7rem;
+                font-size: 0.9rem;
+            }
+            #loginModal .footer-text {
+                margin-top: 0.9rem;
+            }
+            #loginModal .footer-text p {
+                font-size: 0.7rem !important;
+            }
+        }
+
+        @media (max-width: 380px) {
+            #loginModal .login-left,
+            #loginModal .login-right {
+                padding: 1rem 1.1rem;
+            }
+            #loginModal .school-logo {
+                width: 50px;
             }
         }
 
@@ -253,12 +335,183 @@
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; }
         .modal.active { display: flex; }
         .modal-content { background-color: white; width: 95%; max-width: 850px; padding: 25px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); animation: slideDown 0.3s ease; max-height: 90vh; overflow-y: auto; }
+
+        /* --- Login Modal Specific --- */
+        #loginModal .modal-content {
+            padding: 0;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-origin: bottom center;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+        }
+        #loginModal .modal-content.modal-opening {
+            transform: translateY(100px) scale(0.8);
+            opacity: 0;
+        }
+        #loginModal .modal-content.modal-opened {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+        #loginModal .modal-content.modal-closing {
+            transform: translateY(100px) scale(0.8);
+            opacity: 0;
+        }
+        #loginModal .login-container {
+            display: flex;
+            width: 100%;
+        }
+
+        /* --- Sticky Footer --- */
+        .sticky-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        .btn-login-footer {
+            background: white;
+            color: #667eea;
+            padding: 12px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .btn-login-footer:hover {
+            background: #22c55e;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Tombol Informasi (icon telepon) */
+        .btn-info-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 12px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-info-footer i {
+            font-size: 1.1rem;
+        }
+        .btn-info-footer:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Modal Informasi (gambar, tidak terpotong) */
+        #infoModal {
+            padding: 10px;
+        }
+        #infoModal .modal-content {
+            width: auto;
+            height: auto;
+            max-width: 90vw;
+            max-height: 90vh;
+            padding: 20px;
+            margin: 0;
+            border-radius: 10px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: visible;
+            animation: slideDown 0.3s ease;
+        }
+        #infoModal .modal-content img {
+            max-width: 100%;
+            max-height: calc(90vh - 40px);
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            display: block;
+        }
+        #infoModal .close-modal {
+            position: absolute;
+            top: -14px;
+            right: -14px;
+            font-size: 1.6rem;
+            color: #fff;
+            background: #667eea;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            float: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .btn-cancel {
+            width: 100%;
+            padding: 0.9rem;
+            background: #e2e8f0;
+            color: #475569;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        .btn-cancel:hover {
+            background: #cbd5e1;
+        }
         @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         .modal-header h3 { margin: 0; color: #333; font-size: 1.4rem; }
-        .close-modal { font-size: 1.5rem; cursor: pointer; color: #888; transition: color 0.2s; }
-        .close-modal:hover { color: #ef4444; }
+        .close-modal { 
+            font-size: 2rem; 
+            cursor: pointer; 
+            color: #666; 
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: #f5f5f5;
+            line-height: 1;
+        }
+        .close-modal:hover { 
+            color: #fff; 
+            background-color: #ef4444;
+            transform: rotate(90deg);
+        }
 
         .reg-section-title { font-size: 1rem; color: #667eea; margin: 15px 0 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; font-weight: 600; }
         .reg-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -278,6 +531,147 @@
 
         @media (max-width: 768px) {
             .reg-form-grid { grid-template-columns: 1fr; }
+        }
+
+        /* --- Modal Detail Berita --- */
+        .news-detail-modal {
+            display: none;
+            position: fixed;
+            z-index: 10002;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .news-detail-modal.active { display: flex; }
+        .news-detail-box {
+            background: #fff;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            animation: ndmSlideUp 0.3s ease;
+        }
+        @keyframes ndmSlideUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+        /* Header modal: judul + tombol tutup */
+        .news-detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            flex-shrink: 0;
+        }
+        .news-detail-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .news-detail-tag {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+        .news-detail-date {
+            font-size: 0.78rem;
+            color: #94a3b8;
+        }
+        .news-detail-close {
+            width: 34px;
+            height: 34px;
+            background: #f1f5f9;
+            color: #475569;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, color 0.2s;
+            flex-shrink: 0;
+        }
+        .news-detail-close:hover { background: #ef4444; color: #fff; }
+        /* Body scrollable */
+        .news-detail-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+            -webkit-overflow-scrolling: touch;
+        }
+        .news-detail-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #1e293b;
+            line-height: 1.45;
+            margin-bottom: 16px;
+            text-align: justify;
+        }
+        .news-detail-divider {
+            height: 2px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            border-radius: 2px;
+            margin-bottom: 16px;
+            opacity: 0.2;
+            clear: both;
+        }
+        /* Gambar float kiri, teks mengalir di kanan */
+        .news-detail-img-wrap {
+            float: left;
+            width: 45%;
+            margin: 0 16px 12px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+        }
+        .news-detail-img-wrap img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .news-detail-img-placeholder {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+        .news-detail-content {
+            font-size: 0.92rem;
+            color: #374151;
+            line-height: 1.85;
+            white-space: pre-wrap;
+            word-break: break-word;
+            text-align: justify;
+        }
+        /* Clearfix setelah konten */
+        .news-detail-clearfix { clear: both; }
+        /* Mobile */
+        @media (max-width: 480px) {
+            .news-detail-modal { padding: 0; align-items: flex-end; }
+            .news-detail-box { border-radius: 20px 20px 0 0; max-height: 92vh; }
+            .news-detail-title { font-size: 1rem; }
+            .news-detail-body { padding: 16px 14px; }
+            .news-detail-img-wrap {
+                float: none;
+                width: 100%;
+                margin: 0 0 14px 0;
+            }
         }
 
         /* Custom Searchable Dropdown */
@@ -316,187 +710,399 @@
             text-align: center;
         }
 
-        /* --- Modal Peringatan Trial Berakhir --- */
-        .trial-modal-overlay {
+        /* --- Responsive Mobile for Logo --- */
+        @media (max-width: 768px) {
+            body > img {
+                width: 60px !important;
+                height: 60px !important;
+                margin: 0 auto 0.5rem auto !important;
+            }
+            body > p {
+                font-size: 0.7rem !important;
+                margin-bottom: 1rem !important;
+            }
+        }
+
+        /* --- News Container --- */
+        .news-container {
+            width: calc(100% - 20px);
+            max-width: none;
+            margin: 2rem auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .news-title {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .headline-news {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .headline-news:hover {
+            transform: translateY(-5px);
+        }
+
+        .headline-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .headline-content {
+            padding: 20px;
+        }
+
+        .headline-tag {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .headline-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .headline-excerpt {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .small-news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .small-news-item {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .small-news-item:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .small-news-tag {
+            background: #e0e7ff;
+            color: #667eea;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .small-news-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+
+        .small-news-date {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        @media (min-width: 769px) {
+            .news-container {
+                padding: 25px 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .news-container {
+                grid-template-columns: 1fr;
+                margin: 1rem auto;
+            }
+            .headline-image {
+                height: 180px;
+            }
+            .headline-title {
+                font-size: 1.1rem;
+            }
+            
+            /* Carousel for small news on mobile */
+            .small-news-list {
+                flex-direction: row;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+                gap: 15px;
+                padding: 5px;
+            }
+            
+            .small-news-item {
+                flex: 0 0 280px;
+                scroll-snap-align: start;
+            }
+            
+            .small-news-item:hover {
+                transform: translateX(0);
+            }
+        }
+
+
+        /* --- Lihat Semua Button --- */
+        .btn-lihat-semua {
+            background: #2a2a35;
+            color: white;
+            padding: 14px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+            grid-column: 1 / -1;
+            justify-self: center;
+        }
+        .btn-lihat-semua:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- Carousel Modal --- */
+        .carousel-modal {
+            display: none;
             position: fixed;
-            inset: 0;
+            z-index: 10001;
+            left: 0;
+            top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(20, 10, 10, 0.75);
-            backdrop-filter: blur(6px);
-            display: flex;
+            background-color: rgba(0, 0, 0, 0.95);
             align-items: center;
             justify-content: center;
-            z-index: 5000;
-            animation: fadeInOverlay 0.3s ease;
         }
-        @keyframes fadeInOverlay {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .carousel-modal.active {
+            display: flex;
         }
-        .trial-modal-box {
-            width: 92%;
-            max-width: 440px;
-            background: #ffffff;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-            animation: trialPop 0.4s cubic-bezier(.34,1.56,.64,1);
-            text-align: center;
-        }
-        @keyframes trialPop {
-            0% { transform: scale(0.8) translateY(30px); opacity: 0; }
-            100% { transform: scale(1) translateY(0); opacity: 1; }
-        }
-        .trial-modal-header {
-            background: linear-gradient(135deg, #ff5f5f 0%, #c0392b 100%);
-            padding: 28px 20px 22px;
-            color: #fff;
+        .carousel-content {
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
             position: relative;
-        }
-        .trial-modal-icon {
-            width: 68px;
-            height: 68px;
-            margin: 0 auto 12px;
-            background: rgba(255,255,255,0.15);
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.2rem;
-            animation: trialPulse 1.6s ease-in-out infinite;
         }
-        @keyframes trialPulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
-            50% { box-shadow: 0 0 0 14px rgba(255,255,255,0); }
-        }
-        .trial-modal-header h2 {
-            font-size: 1.25rem;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            margin: 0;
-        }
-        .trial-modal-body {
-            padding: 24px 26px 8px;
-            color: #333;
-        }
-        .trial-modal-body p {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 14px;
-        }
-        .trial-modal-signature {
-            margin-top: 18px;
-            padding-top: 16px;
-            border-top: 1px dashed #eee;
-            text-align: left;
-        }
-        .trial-modal-signature p {
-            font-size: 0.88rem;
-            margin-bottom: 2px;
-            color: #555;
-        }
-        .trial-modal-signature .dev-name {
-            font-weight: 700;
-            color: #c0392b;
-            font-size: 0.95rem;
-        }
-        .trial-modal-footer {
-            padding: 18px 26px 26px;
-        }
-        .trial-modal-footer button {
+        .carousel-slide {
             width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #ff5f5f 0%, #c0392b 100%);
-            color: #fff;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: opacity 0.25s;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        .trial-modal-footer button:hover {
+        .carousel-slide.active {
+            display: flex;
+        }
+        .carousel-image {
+            width: 100%;
+            height: 70%;
+            object-fit: contain;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 12px;
+        }
+        .carousel-info {
+            margin-top: 20px;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+        .carousel-tag {
+            background: linear-gradient(to right, #f093fb, #f5576c);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .carousel-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .carousel-year {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+        }
+        .carousel-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 800px;
+        }
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .carousel-nav:hover {
             opacity: 0.9;
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        .carousel-prev {
+            left: 10px;
+        }
+        .carousel-next {
+            right: 10px;
+        }
+        .carousel-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .carousel-close:hover {
+            opacity: 0.9;
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- Main Content Wrapper --- */
+        @media (max-width: 768px) {
+            .news-container {
+                margin: 1rem auto;
+                padding: 20px 15px;
+            }
+            .news-title {
+                font-size: 1.4rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Modal Peringatan: Trial Berakhir -->
-    <div id="trialExpiredModal" class="trial-modal-overlay">
-        <div class="trial-modal-box">
-            <div class="trial-modal-header">
-                <div class="trial-modal-icon">⚠️</div>
-                <h2>MOHON MAAF...!!</h2>
-            </div>
-            <div class="trial-modal-body">
-                <p>Batas penggunaan anda pada Aplikasi <strong>Simpedik Versi Trial</strong> sudah berakhir. Untuk melanjutkan silahkan hubungi Developer Aplikasi.</p>
-                <div class="trial-modal-signature">
-                    <p>Salam Hormat,</p>
-                    <p class="dev-name">Kenji Studio Developer</p>
-                    <p>Developer Aplikasi.</p>
+    <img src="icon-512.png" alt="Logo" style="display: block; margin: 0 auto 1rem auto; width: 100px; height: 100px; object-fit: contain; border-radius: 15px;">
+    <p style="text-align: center; color: white; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Sistem Informasi Manajemen Pelayanan Pendidikan</p>
+    <p id="headerSchoolName" style="text-align: center; color: white; font-size: 0.85rem; font-weight: 600; margin-bottom: 2rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></p>
+
+    <!-- Modal Login -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="login-container">
+                <!-- Bagian Kiri: Identitas Sekolah -->
+                <div class="login-left">
+                    <img src="" alt="Logo Sekolah" class="school-logo" style="display: none;">
+                    <h1></h1>
+                    <p></p>
                 </div>
-            </div>
-            <div class="trial-modal-footer">
-                <button id="btnTrialExpiredOk" type="button">Mengerti</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- Logo dan Judul di Luar Container Login -->
-    <div style="text-align: center; margin-top: 50px; margin-bottom: 30px; color: white; padding: 0 20px;">
-        <img src="logosimpedik.png" alt="Logo SIMPEDIK" class="brand-logo" style="width: 200px; height: 200px; margin-bottom: 15px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">
-        <h2 style="font-size: 1.25rem; font-weight: 600; line-height: 1.4; max-width: 600px; margin: 0 auto; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
-            Sistem Informasi Manajemen Perkembangan Pembelajaran Peserta Didik
-        </h2>
-    </div>
-
-    <div class="login-container">
-        <!-- Bagian Kiri: Identitas Sekolah -->
-        <div class="login-left">
-            <img src="" alt="Logo Sekolah" class="school-logo" style="display: none;">
-            <h1></h1>
-            <p></p>
-        </div>
-
-        <!-- Bagian Kanan: Form Login -->
-        <div class="login-right">
-            <div class="login-header">
-                <h2>Selamat Datang</h2>
-                <p>Silakan masuk ke akun Anda</p>
-            </div>
-
-            <div id="messageBox" class="message"></div>
-
-            <form id="loginForm">
-                <div class="form-group">
-                    <label>Masuk Sebagai</label>
-                    <div class="role-tabs">
-                        <button type="button" class="role-tab active" data-role="Siswa">Siswa</button>
-                        <button type="button" class="role-tab" data-role="Guru">Guru</button>
-                        <button type="button" class="role-tab" data-role="Administrator">Admin</button>
+                <!-- Bagian Kanan: Form Login -->
+                <div class="login-right">
+                    <div class="login-header">
+                        <h2>Selamat Datang</h2>
+                        <p>Silakan masuk ke akun Anda</p>
                     </div>
-                    <input type="hidden" id="role" value="Siswa">
+
+                    <div id="messageBox" class="message"></div>
+
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label>Masuk Sebagai</label>
+                            <div class="role-tabs">
+                                <button type="button" class="role-tab active" data-role="Siswa">Siswa/Orangtua</button>
+                                <button type="button" class="role-tab" data-role="Guru">Guru</button>
+                                <button type="button" class="role-tab" data-role="Administrator">Admin Utama</button>
+                            </div>
+                            <input type="hidden" id="role" value="Siswa">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="field1" id="label1">Nama Lengkap</label>
+                            <input type="text" id="field1" placeholder="Masukkan Nama Lengkap" required autocomplete="off">
+                            <div id="field1-dropdown" class="dropdown-options"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="field2" id="label2">NISN</label>
+                            <input type="number" id="field2" placeholder="Masukkan NISN" required>
+                            <button type="button" class="toggle-password" id="togglePassword" style="display: none;">Lihat</button>
+                        </div>
+
+                        <button type="submit" class="btn-login" id="submitBtn">Masuk</button>
+                        <button type="button" class="btn-cancel" id="cancelLoginBtn">Batal</button>
+                    </form>
+
+                    <div class="footer-text">
+                        <p style="font-size: 0.8rem; color: #666;">Copyright : SMKN 1 Simpang Teritip-2026</p>
+                        <p style="font-size: 0.75rem; color: #888;">Product Manager : Hasdiah, S.Pd, Ing., M.M.</p>
+                        <p style="font-size: 0.75rem; color: #888;">Software Engineer : KenjiStudioDeveloper</p>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="field1" id="label1">Nama Lengkap</label>
-                    <input type="text" id="field1" placeholder="Masukkan Nama Lengkap" required autocomplete="off">
-                    <div id="field1-dropdown" class="dropdown-options"></div>
-                </div>
-
-                <div class="form-group">
-                    <label for="field2" id="label2">NISN</label>
-                    <input type="number" id="field2" placeholder="Masukkan NISN" required>
-                    <button type="button" class="toggle-password" id="togglePassword" style="display: none;">Lihat</button>
-                </div>
-
-                <button type="submit" class="btn-login" id="submitBtn">Masuk</button>
-            </form>
-
-            <div class="footer-text">
-                
             </div>
         </div>
     </div>
@@ -612,13 +1218,17 @@
         /* --- JavaScript: Logika Halaman --- */
         
         // --- Supabase Integration ---
-        const supabaseUrl = 'https://uxgjxtboteoxwwwbutpb.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4Z2p4dGJvdGVveHd3d2J1dHBiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE4MDIsImV4cCI6MjA5MTU5NzgwMn0.jO_GLS0DKFE4wwPejh4YVC9ZOO4BENdESH1zoQe1rsc';
-        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+        const simpedikUrl = 'https://uxgjxtboteoxwwwbutpb.supabase.co';
+        const simpedikKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4Z2p4dGJvdGVveHd3d2J1dHBiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE4MDIsImV4cCI6MjA5MTU5NzgwMn0.jO_GLS0DKFE4wwPejh4YVC9ZOO4BENdESH1zoQe1rsc';
+        const simpedikClient = supabase.createClient(simpedikUrl, simpedikKey);
+
+        const absensiUrl = 'https://uxgjxtboteoxwwwbutpb.supabase.co';
+        const absensiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4Z2p4dGJvdGVveHd3d2J1dHBiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE4MDIsImV4cCI6MjA5MTU5NzgwMn0.jO_GLS0DKFE4wwPejh4YVC9ZOO4BENdESH1zoQe1rsc';
+        const absensiClient = supabase.createClient(absensiUrl, absensiKey);
         
         async function loadSchoolIdentity() {
             try {
-                const { data, error } = await supabaseClient
+                const { data, error } = await simpedikClient
                     .from('identitassekolah')
                     .select('nama_sekolah, logo, slogan')
                     .limit(1)
@@ -627,6 +1237,8 @@
                 if (data) {
                     if (data.nama_sekolah) {
                         document.querySelector('.login-left h1').textContent = data.nama_sekolah;
+                        const headerSchoolName = document.getElementById('headerSchoolName');
+                        if (headerSchoolName) headerSchoolName.textContent = data.nama_sekolah;
                     }
                     if (data.logo) {
                         document.querySelector('.school-logo').src = data.logo;
@@ -641,6 +1253,7 @@
             }
         }
         document.addEventListener('DOMContentLoaded', loadSchoolIdentity);
+
 
         document.addEventListener('DOMContentLoaded', () => {
             const loginForm = document.getElementById('loginForm');
@@ -663,18 +1276,18 @@
             // Konfigurasi Field berdasarkan Role
             const roleConfig = {
                 'Siswa': {
-                    label1: 'Nama Lengkap', 
+                    label1: 'Nama Lengkap',
                     isSelect1: true,
                     options1: [], // Akan diisi dari database
                     label2: 'NISN', placeholder2: 'Masukkan NISN', type2: 'number',
                     isPassword: false
                 },
                 'Guru': {
-                    label1: 'Nama Lengkap', 
+                    label1: 'Nama Lengkap',
                     isSelect1: true,
                     options1: [], // Akan diisi dari database
-                    label2: 'Password', placeholder2: 'Masukkan Password', type2: 'password',
-                    isPassword: true
+                    label2: 'NIP', placeholder2: 'Masukkan NIP', type2: 'number',
+                    isPassword: false
                 },
                 'Administrator': {
                     label1: 'Username', placeholder1: 'Masukkan Username', type1: 'text',
@@ -687,7 +1300,7 @@
             // --- Fetch Data Guru untuk Dropdown ---
             async function loadGuruData() {
                 try {
-                    const { data, error } = await supabaseClient
+                    const { data, error } = await simpedikClient
                         .from('dataguru')
                         .select('nama_guru')
                         .order('nama_guru');
@@ -711,7 +1324,7 @@
             // --- Fetch Data Siswa untuk Dropdown ---
             async function loadSiswaData() {
                 try {
-                    const { data, error } = await supabaseClient
+                    const { data, error } = await simpedikClient
                         .from('datasiswa')
                         .select('nama_siswa')
                         .order('nama_siswa');
@@ -850,27 +1463,14 @@
 
                 if (role === 'Administrator') {
                     try {
-                        const { data, error } = await supabaseClient
+                        const { data, error } = await simpedikClient
                             .from('identitassekolah')
                             .select('username, password')
-                            .limit(1)
-                            .maybeSingle();
+                            .eq('username', val1)
+                            .eq('password', val2)
+                            .single();
 
-                        let isValid = false;
-                        
-                        // Jika data sekolah ada dan username/password sudah diisi di database
-                        if (data && data.username && data.password) {
-                            if (val1 === data.username && val2 === data.password) {
-                                isValid = true;
-                            }
-                        } else {
-                            // Gunakan default KenjiStudio jika database atau kolom username/password masih kosong
-                            if (val1 === 'KenjiStudio' && val2 === 'Kenzio2016') {
-                                isValid = true;
-                            }
-                        }
-
-                        if (!isValid) throw new Error('Username atau Password salah.');
+                        if (error || !data) throw new Error('Username atau Password salah.');
 
                         showMessage('Login Berhasil! Mengalihkan...', 'success');
                         setTimeout(() => { window.location.href = 'dasboradmin.html'; }, 1000);
@@ -881,15 +1481,15 @@
                     }
                 } else if (role === 'Guru') {
                     try {
-                        // Query Supabase untuk cek Nama dan Password
-                        const { data, error } = await supabaseClient
+                        // Query Supabase untuk cek Nama dan NIP
+                        const { data, error } = await simpedikClient
                             .from('dataguru')
                             .select('*')
                             .eq('nama_guru', val1)
-                            .eq('password', val2.trim())
+                            .eq('nip', val2.trim())
                             .single();
 
-                        if (error || !data) throw new Error('Nama atau Password tidak sesuai dengan data guru.');
+                        if (error || !data) throw new Error('Nama atau NIP tidak sesuai dengan data guru.');
 
                         // Simpan sesi guru ke sessionStorage
                         sessionStorage.setItem('guru_session', JSON.stringify({
@@ -917,7 +1517,7 @@
                 } else if (role === 'Siswa') {
                     try {
                         // Query Supabase untuk cek Nama dan NISN
-                        const { data, error } = await supabaseClient
+                        const { data, error } = await simpedikClient
                             .from('datasiswa')
                             .select('*')
                             .eq('nama_siswa', val1)
@@ -945,6 +1545,89 @@
                 messageBox.className = `message ${type}`;
                 messageBox.style.display = 'block';
             }
+
+            // --- Logic Modal Login ---
+            const loginModal = document.getElementById('loginModal');
+            const cancelLoginBtn = document.getElementById('cancelLoginBtn');
+            const loginModalContent = loginModal.querySelector('.modal-content');
+
+            // Tampilkan Modal Login secara otomatis di tengah saat halaman dimuat
+            loginModal.classList.add('active');
+            loginModalContent.classList.add('modal-opened');
+
+            // Tutup Modal Login dengan animasi ke bawah
+            function closeLoginModal() {
+                // Tambahkan class untuk animasi closing
+                loginModalContent.classList.remove('modal-opened');
+                loginModalContent.classList.add('modal-closing');
+                
+                // Sembunyikan modal setelah animasi selesai
+                setTimeout(() => {
+                    loginModal.classList.remove('active');
+                    loginModalContent.classList.remove('modal-closing');
+                }, 300);
+            }
+
+            cancelLoginBtn.addEventListener('click', closeLoginModal);
+
+
+            // --- Logic Carousel Modal (reusable untuk Galeri Prestasi & Berita Sekolah) ---
+            function setupCarousel({ btnId, modalId, closeId, prevId, nextId }) {
+                const btn = document.getElementById(btnId);
+                const modal = document.getElementById(modalId);
+                const closeBtn = document.getElementById(closeId);
+                const prevBtn = document.getElementById(prevId);
+                const nextBtn = document.getElementById(nextId);
+                const slides = modal.querySelectorAll('.carousel-slide');
+                let currentSlide = 0;
+
+                function updateCarousel() {
+                    slides.forEach((slide, index) => {
+                        slide.classList.toggle('active', index === currentSlide);
+                    });
+                }
+
+                // Buka Carousel Modal
+                btn.addEventListener('click', () => {
+                    modal.classList.add('active');
+                    currentSlide = 0;
+                    updateCarousel();
+                });
+
+                // Tutup Carousel Modal
+                closeBtn.addEventListener('click', () => {
+                    modal.classList.remove('active');
+                });
+
+                // Navigasi Next
+                nextBtn.addEventListener('click', () => {
+                    currentSlide = (currentSlide + 1) % slides.length;
+                    updateCarousel();
+                });
+
+                // Navigasi Previous
+                prevBtn.addEventListener('click', () => {
+                    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                    updateCarousel();
+                });
+
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    if (!modal.classList.contains('active')) return;
+                    if (e.key === 'ArrowRight') {
+                        currentSlide = (currentSlide + 1) % slides.length;
+                        updateCarousel();
+                    } else if (e.key === 'ArrowLeft') {
+                        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                        updateCarousel();
+                    } else if (e.key === 'Escape') {
+                        modal.classList.remove('active');
+                    }
+                });
+            }
+
+
+            // Berita Sekolah carousel dihandle secara dinamis oleh setupNewsCarouselDynamic()
 
             // --- Logic Modal Pendaftaran ---
             const regModal = document.getElementById('registerModal');
@@ -1011,13 +1694,13 @@
                     const fileExt = file.name.split('.').pop();
                     const fileName = `logo_${npsn}_${timestamp}.${fileExt}`;
 
-                    const { error: uploadError } = await supabaseClient.storage
+                    const { error: uploadError } = await simpedikClient.storage
                         .from('aset')
                         .upload(fileName, file);
                     
                     if (uploadError) throw new Error('Gagal upload logo: ' + uploadError.message);
 
-                    const { data: urlData } = supabaseClient.storage
+                    const { data: urlData } = simpedikClient.storage
                         .from('aset')
                         .getPublicUrl(fileName);
                     
@@ -1041,7 +1724,7 @@
                         password: password
                     };
 
-                    const { error: insertError } = await supabaseClient
+                    const { error: insertError } = await simpedikClient
                         .from('identitassekolah')
                         .upsert([formData]); // Menggunakan upsert sesuai logika identitassekolah.html
 
@@ -1061,28 +1744,7 @@
             });
         });
     </script>
-
-    <!-- Skrip Modal Peringatan Trial Berakhir -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const trialModal = document.getElementById('trialExpiredModal');
-            const btnTrialOk = document.getElementById('btnTrialExpiredOk');
-            if (trialModal && btnTrialOk) {
-                btnTrialOk.addEventListener('click', () => {
-                    trialModal.style.display = 'none';
-
-                    // Nonaktifkan tombol Masuk karena masa trial sudah berakhir
-                    const submitBtn = document.getElementById('submitBtn');
-                    if (submitBtn) {
-                        submitBtn.disabled = true;
-                        submitBtn.textContent = 'Masuk (Nonaktif)';
-                    }
-                });
-            }
-        });
-    </script>
-
-         <!-- 🔥 SERVICE WORKER -->
+             <!-- 🔥 SERVICE WORKER -->
     <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -1092,5 +1754,6 @@
         });
     }
     </script>
+
 </body>
 </html>
